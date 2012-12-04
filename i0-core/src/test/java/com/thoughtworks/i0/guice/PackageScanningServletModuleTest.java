@@ -6,7 +6,6 @@ import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -29,8 +28,8 @@ public class PackageScanningServletModuleTest {
         start(new PackageScanningServletModule("com.thoughtworks.i0.guice.servlets.urlpatterns"));
         assertThat(get("http://localhost:8080/s1"), is("servlet1\n"));
         assertThat(get("http://localhost:8080/s2"), is("servlet1\n"));
-        assertThat(get("http://localhost:8080/s3"), is("servlet2\n"));
-        assertThat(get("http://localhost:8080/s4"), is("servlet2\n"));
+        assertThat(get("http://localhost:8080/a.jpg"), is("servlet2\n"));
+        assertThat(get("http://localhost:8080/b.jpg"), is("servlet2\n"));
     }
 
     @Test
@@ -38,22 +37,22 @@ public class PackageScanningServletModuleTest {
         start(new PackageScanningServletModule("com.thoughtworks.i0.guice.servlets.values"));
         assertThat(get("http://localhost:8080/s1"), is("servlet1\n"));
         assertThat(get("http://localhost:8080/s2"), is("servlet1\n"));
-        assertThat(get("http://localhost:8080/s3"), is("servlet2\n"));
-        assertThat(get("http://localhost:8080/s4"), is("servlet2\n"));
+        assertThat(get("http://localhost:8080/a.jpg"), is("servlet2\n"));
+        assertThat(get("http://localhost:8080/b.jpg"), is("servlet2\n"));
     }
 
     @Test
     public void should_register_all_filter_from_specific_package_with_url_patterns() throws Exception {
         start(new PackageScanningServletModule("com.thoughtworks.i0.guice.filters.urlpatterns", "com.thoughtworks.i0.guice.servlets.urlpatterns"));
         assertThat(get("http://localhost:8080/s1"), is("filter1\nservlet1\n"));
-        assertThat(get("http://localhost:8080/s3"), is("filter2\nservlet2\n"));
+        assertThat(get("http://localhost:8080/a.jpg"), is("filter2\nservlet2\n"));
     }
 
     @Test
     public void should_register_all_filter_from_specific_package_with_values() throws Exception {
         start(new PackageScanningServletModule("com.thoughtworks.i0.guice.filters.values", "com.thoughtworks.i0.guice.servlets.values"));
         assertThat(get("http://localhost:8080/s1"), is("filter1\nservlet1\n"));
-        assertThat(get("http://localhost:8080/s3"), is("filter2\nservlet2\n"));
+        assertThat(get("http://localhost:8080/a.jpg"), is("filter2\nservlet2\n"));
     }
 
     private void start(final Module... modules) throws Exception {
@@ -72,10 +71,10 @@ public class PackageScanningServletModuleTest {
     }
 
     private String get(String url) throws Exception {
-        return new String(clent().GET(url).get().content());
+        return new String(client().GET(url).get().content());
     }
 
-    private HttpClient clent() throws Exception {
+    private HttpClient client() throws Exception {
         if (client == null || !client.isRunning()) {
             client = new HttpClient();
             client.start();

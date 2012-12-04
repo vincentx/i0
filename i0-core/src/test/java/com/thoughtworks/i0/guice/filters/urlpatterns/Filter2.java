@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 import javax.servlet.annotation.WebFilter;
 
 @Singleton
-@WebFilter(urlPatterns = "/s3")
+@WebFilter(urlPatterns = "*.jpg")
 public class Filter2 extends TestFilter {
     public Filter2() {
         super("filter2\n");

@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 import javax.servlet.annotation.WebServlet;
 
 @Singleton
-@WebServlet({"/s3", "/s4"})
+@WebServlet({"*.jpg"})
 public class Servlet2 extends TestServlet {
     public Servlet2() {
         super("servlet2\n");
