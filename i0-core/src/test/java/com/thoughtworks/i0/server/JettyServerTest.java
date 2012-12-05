@@ -1,6 +1,8 @@
 package com.thoughtworks.i0.server;
 
+import com.google.inject.AbstractModule;
 import com.thoughtworks.i0.Application;
+import com.thoughtworks.i0.server.sample.inject.services.MessageProvider;
 import org.eclipse.jetty.client.HttpClient;
 import org.junit.After;
 import org.junit.Test;
@@ -17,7 +19,7 @@ public class JettyServerTest {
         server = new JettyServer(new Application("test") {{
             port(8080);
 
-            servlets("com.thoughtworks.i0.server.sample.servlets;");
+            servlets("com.thoughtworks.i0.server.sample.simple.servlets;");
         }});
 
         server.start(false);
@@ -29,7 +31,7 @@ public class JettyServerTest {
         server = new JettyServer(new Application("test") {{
             port(8080);
 
-            api("com.thoughtworks.i0.server.sample.api;");
+            api("com.thoughtworks.i0.server.sample.simple.api;");
         }});
 
         server.start(false);
@@ -41,12 +43,36 @@ public class JettyServerTest {
         server = new JettyServer(new Application("test") {{
             port(8080);
 
-            root("com.thoughtworks.i0.server.sample");
+            root("com.thoughtworks.i0.server.sample.simple");
         }});
 
         server.start(false);
         assertThat(get("http://localhost:8080/test/s1"), is("servlet1\n"));
         assertThat(get("http://localhost:8080/test/api/resource1/message"), is("message"));
+    }
+
+    @Test
+    public void should_inject_service_to_resource_and_servlets() throws Exception {
+        server = new JettyServer(new Application("test") {{
+            port(8080);
+
+            root("com.thoughtworks.i0.server.sample.inject");
+
+            install(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(MessageProvider.class).toInstance(new MessageProvider() {
+                        @Override
+                        public String message() {
+                            return "injected";
+                        }
+                    });
+                }
+            });
+        }});
+        server.start(false);
+        assertThat(get("http://localhost:8080/test/s1"), is("injected"));
+        assertThat(get("http://localhost:8080/test/api/resource1/message"), is("injected"));
     }
 
     private String get(String url) throws Exception {

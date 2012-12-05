@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.server.sample.api;
+package com.thoughtworks.i0.server.sample.simple.api;
 
 import javax.inject.Singleton;
 import javax.ws.rs.GET;

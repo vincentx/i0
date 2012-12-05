@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.server.sample.servlets;
+package com.thoughtworks.i0.server.sample.simple.servlets;
 
 import com.thoughtworks.i0.guice.servlets.TestServlet;
 

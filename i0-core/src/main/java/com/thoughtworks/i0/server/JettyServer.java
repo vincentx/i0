@@ -34,6 +34,8 @@ public class JettyServer {
     private void configure(final Application application) {
         final ImmutableSet.Builder<Module> modules = new ImmutableSet.Builder<>();
 
+        modules.addAll(application.modules());
+
         scanServlets(application, modules);
 
         scanApi(application, modules);
