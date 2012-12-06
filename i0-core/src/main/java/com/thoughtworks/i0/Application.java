@@ -3,6 +3,7 @@ package com.thoughtworks.i0;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.thoughtworks.i0.server.JettyServer;
 
 import java.util.Set;
 
@@ -65,5 +66,9 @@ public abstract class Application {
     protected void root(String packageName) {
         api(packageName + ".api");
         servlets(packageName + ".servlets");
+    }
+
+    public void standalone() throws Exception {
+        new JettyServer(this).start(true);
     }
 }
