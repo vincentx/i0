@@ -1,0 +1,25 @@
+apply plugin: 'groovy'
+
+group = 'com.thoughtworks.i0'
+version = '0.1.0'
+
+dependencies {
+    compile gradleApi()
+    groovy localGroovy()
+
+    testCompile 'junit:junit:4.10'
+}
+
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repository'))
+        }
+    }
+}
