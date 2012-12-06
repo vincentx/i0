@@ -76,7 +76,7 @@ public class JettyServer {
             @Override
             protected void configureServlets() {
                 serve("/api/*").with(GuiceContainer.class, new ImmutableMap.Builder<String, String>()
-                        .put(PackagesResourceConfig.PROPERTY_PACKAGES, on("; ").skipNulls().join(application.api())).build());
+                        .put(PackagesResourceConfig.PROPERTY_PACKAGES, on(";").skipNulls().join(application.api()) + ";com.fasterxml.jackson.jaxrs.json").build());
             }
         });
     }

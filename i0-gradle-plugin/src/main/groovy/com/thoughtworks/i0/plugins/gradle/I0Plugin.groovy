@@ -19,6 +19,8 @@ class I0Plugin implements Plugin<Project> {
 
     final static def HIBERNATE = ['org.hibernate:hibernate-entitymanager:4.1.7.Final']
 
+    final static def REST = ['com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.1.1']
+
     @Override
     void apply(Project project) {
         project.repositories {
@@ -38,6 +40,7 @@ class I0Plugin implements Plugin<Project> {
             }
 
             runtime('org.hibernate:hibernate-validator:4.3.0.Final')
+            REST.each {compile it}
         }
         project.configurations.getByName('runtime').exclude(group: 'org.eclipse.jetty', module: 'jetty-project')
 
