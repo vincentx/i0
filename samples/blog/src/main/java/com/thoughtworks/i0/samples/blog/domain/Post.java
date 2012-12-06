@@ -21,6 +21,9 @@ public class Post {
     @Size(max = 500)
     private String content;
 
+    private Post() {
+    }
+
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
