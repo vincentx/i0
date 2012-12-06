@@ -53,7 +53,7 @@ class I0Plugin implements Plugin<Project> {
 
         project.task('init', type: InitTask)
 
-        project.task('deployJar', type: Jar, dependsOn: 'jar') {
+        project.task('deployJar', type: Jar, dependsOn: ':jar') {
             baseName = project.name + '-deploy'
             def deps = project.configurations.runtime + project.configurations.archives
             def depClasses = { deps.collect { it.isDirectory() ? it : zipTree(it) } }
