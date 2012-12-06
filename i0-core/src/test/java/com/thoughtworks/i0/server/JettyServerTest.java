@@ -19,7 +19,7 @@ public class JettyServerTest {
         server = new JettyServer(new Application("test") {{
             port(8080);
 
-            servlets("com.thoughtworks.i0.server.sample.simple.servlets;");
+            servlets("com.thoughtworks.i0.server.sample.simple.servlets");
         }});
 
         server.start(false);
