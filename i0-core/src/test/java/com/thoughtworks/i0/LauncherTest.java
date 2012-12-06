@@ -1,8 +1,8 @@
-package com.thoughtworks.i0.server;
+package com.thoughtworks.i0;
 
-import com.google.inject.AbstractModule;
-import com.thoughtworks.i0.Application;
-import com.thoughtworks.i0.server.sample.inject.services.MessageProvider;
+import com.thoughtworks.i0.Launcher;
+import com.thoughtworks.i0.config.builder.ApplicationConfig;
+import com.thoughtworks.i0.server.JettyServer;
 import org.eclipse.jetty.client.HttpClient;
 import org.junit.After;
 import org.junit.Test;
@@ -10,66 +10,53 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class JettyServerTest {
+public class LauncherTest {
     private HttpClient client;
     private JettyServer server;
 
     @Test
     public void should_use_application_name_as_root_context() throws Exception {
-        server = new JettyServer(new Application("test") {{
-            port(8080);
+        server = new Launcher("test", new ApplicationConfig() {
+            {
+                config().servlets("com.thoughtworks.i0.server.sample.simple.servlets");
+            }
+        }.configuration(), null, 8080).launch(false);
 
-            servlets("com.thoughtworks.i0.server.sample.simple.servlets");
-        }});
-
-        server.start(false);
         assertThat(get("http://localhost:8080/test/s1"), is("servlet1\n"));
     }
 
     @Test
     public void should_register_all_resources_as_api() throws Exception {
-        server = new JettyServer(new Application("test") {{
-            port(8080);
+        server = new Launcher("test", new ApplicationConfig() {
+            {
+                config().api("com.thoughtworks.i0.server.sample.simple.api");
+            }
+        }.configuration(), null, 8080).launch(false);
 
-            api("com.thoughtworks.i0.server.sample.simple.api;");
-        }});
-
-        server.start(false);
         assertThat(get("http://localhost:8080/test/api/resource1/message"), is("message"));
     }
 
     @Test
     public void should_auto_scan_servlets_and_api_from_base_package() throws Exception {
-        server = new JettyServer(new Application("test") {{
-            port(8080);
+        server = new Launcher("test", new ApplicationConfig() {
+            {
+                config().root("com.thoughtworks.i0.server.sample.simple");
+            }
+        }.configuration(), null, 8080).launch(false);
 
-            root("com.thoughtworks.i0.server.sample.simple");
-        }});
-
-        server.start(false);
         assertThat(get("http://localhost:8080/test/s1"), is("servlet1\n"));
         assertThat(get("http://localhost:8080/test/api/resource1/message"), is("message"));
     }
 
     @Test
     public void should_inject_service_to_resource_and_servlets() throws Exception {
-        server = new JettyServer(new Application("test") {{
-            port(8080);
+        server = new Launcher("test", new ApplicationConfig() {
+            {
+                config().root("com.thoughtworks.i0.server.sample.inject")
+                        .services("com.thoughtworks.i0.server.sample.inject.services");
+            }
+        }.configuration(), null, 8080).launch(false);
 
-            root("com.thoughtworks.i0.server.sample.inject");
-
-            install(new AbstractModule() {
-                @Override
-                protected void configure() {
-                    bind(MessageProvider.class).toInstance(new MessageProvider() {
-                        @Override
-                        public String message() {
-                            return "injected";
-                        }
-                    });
-                }
-            });
-        }});
         server.start(false);
         assertThat(get("http://localhost:8080/test/s1"), is("injected"));
         assertThat(get("http://localhost:8080/test/api/resource1/message"), is("injected"));

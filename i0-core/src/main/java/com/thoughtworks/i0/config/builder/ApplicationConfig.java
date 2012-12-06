@@ -2,7 +2,7 @@ package com.thoughtworks.i0.config.builder;
 
 import com.thoughtworks.i0.config.ApplicationConfiguration;
 
-public class Application {
+public class ApplicationConfig {
     private ApplicationConfigurationBuilder configurationBuilder;
 
     protected ApplicationConfigurationBuilder config() {

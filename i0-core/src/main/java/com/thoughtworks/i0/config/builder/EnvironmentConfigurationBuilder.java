@@ -1,6 +1,5 @@
 package com.thoughtworks.i0.config.builder;
 
-import com.thoughtworks.i0.config.DatabaseConfiguration;
 import com.thoughtworks.i0.config.EnvironmentConfiguration;
 
 import java.util.Collections;
@@ -11,6 +10,7 @@ public class EnvironmentConfigurationBuilder {
     private Set<String> apiPackages = new HashSet<>();
     private Set<String> servletPackages = new HashSet<>();
     private Set<String> filterPackages = new HashSet<>();
+    private Set<String> servicePackages = new HashSet<>();
     private DatabaseConfigurationBuilder databaseConfigurationBuilder;
 
     public EnvironmentConfigurationBuilder api(String... apiPackages) {
@@ -28,6 +28,11 @@ public class EnvironmentConfigurationBuilder {
         return this;
     }
 
+    public EnvironmentConfigurationBuilder services(String... servicePackages) {
+        Collections.addAll(this.servicePackages, servicePackages);
+        return this;
+    }
+
     public DatabaseConfigurationBuilder database() {
         this.databaseConfigurationBuilder = new DatabaseConfigurationBuilder();
         return databaseConfigurationBuilder;
@@ -35,6 +40,6 @@ public class EnvironmentConfigurationBuilder {
 
 
     public EnvironmentConfiguration build() {
-        return new EnvironmentConfiguration(apiPackages, servletPackages, filterPackages, databaseConfigurationBuilder.build());
+        return new EnvironmentConfiguration(apiPackages, servletPackages, filterPackages, servicePackages, databaseConfigurationBuilder.build());
     }
 }

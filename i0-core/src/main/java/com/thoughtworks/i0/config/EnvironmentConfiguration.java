@@ -12,6 +12,8 @@ public class EnvironmentConfiguration {
     private Set<String> servletPackages;
     @JsonProperty("filters")
     private Set<String> filterPackages;
+    @JsonProperty("service-modules")
+    private Set<String> servicePackages;
     @JsonProperty("database")
     private DatabaseConfiguration databaseConfiguration;
 
@@ -20,11 +22,33 @@ public class EnvironmentConfiguration {
             @JsonProperty("api") Set<String> apiPackages,
             @JsonProperty("servlets") Set<String> servletPackages,
             @JsonProperty("filters") Set<String> filterPackages,
+            @JsonProperty("service-modules") Set<String> servicePackages,
             @JsonProperty("database") DatabaseConfiguration databaseConfiguration) {
         this.apiPackages = apiPackages;
         this.servletPackages = servletPackages;
         this.filterPackages = filterPackages;
+        this.servicePackages = servicePackages;
         this.databaseConfiguration = databaseConfiguration;
+    }
+
+    public Set<String> getApiPackages() {
+        return apiPackages;
+    }
+
+    public Set<String> getServletPackages() {
+        return servletPackages;
+    }
+
+    public Set<String> getServicePackages() {
+        return servicePackages;
+    }
+
+    public Set<String> getFilterPackages() {
+        return filterPackages;
+    }
+
+    public DatabaseConfiguration getDatabaseConfiguration() {
+        return databaseConfiguration;
     }
 
     @Override
@@ -39,6 +63,8 @@ public class EnvironmentConfiguration {
             return false;
         if (filterPackages != null ? !filterPackages.equals(that.filterPackages) : that.filterPackages != null)
             return false;
+        if (servicePackages != null ? !servicePackages.equals(that.servicePackages) : that.servicePackages != null)
+            return false;
         if (servletPackages != null ? !servletPackages.equals(that.servletPackages) : that.servletPackages != null)
             return false;
 
@@ -50,6 +76,7 @@ public class EnvironmentConfiguration {
         int result = apiPackages != null ? apiPackages.hashCode() : 0;
         result = 31 * result + (servletPackages != null ? servletPackages.hashCode() : 0);
         result = 31 * result + (filterPackages != null ? filterPackages.hashCode() : 0);
+        result = 31 * result + (servicePackages != null ? servicePackages.hashCode() : 0);
         result = 31 * result + (databaseConfiguration != null ? databaseConfiguration.hashCode() : 0);
         return result;
     }

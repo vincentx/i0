@@ -11,6 +11,7 @@ public class ApplicationConfigurationBuilder {
     private Set<String> apiPackages = new HashSet<>();
     private Set<String> servletPackages = new HashSet<>();
     private Set<String> filterPackages = new HashSet<>();
+    private Set<String> servicePackages = new HashSet<>();
     private Map<String, EnvironmentConfigurationBuilder> environmentBuilders = new HashMap<>();
 
     public ApplicationConfigurationBuilder unit(String persistUnit) {
@@ -38,6 +39,12 @@ public class ApplicationConfigurationBuilder {
         return this;
     }
 
+    public ApplicationConfigurationBuilder services(String... servicePackages) {
+        Collections.addAll(this.servicePackages, servicePackages);
+        return this;
+    }
+
+
     public EnvironmentConfigurationBuilder environment(String name) {
         if (!environmentBuilders.containsKey(name))
             environmentBuilders.put(name, new EnvironmentConfigurationBuilder());
@@ -47,6 +54,6 @@ public class ApplicationConfigurationBuilder {
     public ApplicationConfiguration build() {
         Map<String, EnvironmentConfiguration> environments = new HashMap<>();
         for (String key : environmentBuilders.keySet()) environments.put(key, environmentBuilders.get(key).build());
-        return new ApplicationConfiguration(persistUnit, rootPackage, apiPackages, servletPackages, filterPackages, environments);
+        return new ApplicationConfiguration(persistUnit, rootPackage, apiPackages, servletPackages, filterPackages, servicePackages, environments);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 
 public class DatabaseConfiguration {
-    private static final List<String> jpaProperties = asList("lock.timeout",
+    public static final List<String> jpaProperties = asList("lock.timeout",
             "query.timeout", "validation.mode", "validation.group.pre-persist", "validation.group.pre-update",
             "validation.group.pre-remove", "provider");
 
@@ -37,6 +37,26 @@ public class DatabaseConfiguration {
         this.user = user;
         this.password = password;
         this.properties = properties;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
     @Override
