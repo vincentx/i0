@@ -40,7 +40,7 @@ class I0Plugin implements Plugin<Project> {
             }
 
             runtime('org.hibernate:hibernate-validator:4.3.0.Final')
-            REST.each {compile it}
+            REST.each {runtime it}
         }
         project.configurations.getByName('runtime').exclude(group: 'org.eclipse.jetty', module: 'jetty-project')
 
