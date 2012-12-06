@@ -25,7 +25,10 @@ class I0Plugin implements Plugin<Project> {
                 transitive = false
             }
 
-            runtime('com.thoughtworks.i0:i0-core:0.1.0')
+            runtime('com.thoughtworks.i0:i0-core:0.1.0') {
+                transitive = true
+            }
         }
+        project.configurations.getByName('runtime').exclude(group: org.eclipse.jetty, module: jetty - project)
     }
 }
