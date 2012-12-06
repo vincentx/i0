@@ -5,7 +5,8 @@ import com.thoughtworks.i0.Application;
 public class BlogApplication extends Application {
     {
         name("blog");
-        db("", "");
+        db("jdbc:h2:mem", "org.h2.Driver");
+
         persistence("domain");
         api("com.thoughtworks.i0.samples.blog.api");
     }
