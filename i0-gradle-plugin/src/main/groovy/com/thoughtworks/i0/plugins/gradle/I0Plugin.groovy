@@ -29,6 +29,6 @@ class I0Plugin implements Plugin<Project> {
                 transitive = true
             }
         }
-        project.configurations.getByName('runtime').exclude(group: org.eclipse.jetty, module: jetty - project)
+        project.configurations.getByName('runtime').exclude(group: 'org.eclipse.jetty', module: 'jetty-project')
     }
 }
