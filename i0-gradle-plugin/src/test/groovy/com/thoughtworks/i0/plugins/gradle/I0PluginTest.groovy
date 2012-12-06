@@ -30,8 +30,8 @@ class I0PluginTest {
     public void should_add_java_basic_compile_dependencies() {
         Configuration compile = project.configurations.getByName("compile")
 
-        checkDependencies(compile.allDependencies, I0Plugin.JAVAX_DEPENDENCIES)
-        checkDependencies(compile.allDependencies, I0Plugin.FUNCTIONAL_JAVA)
+        checkDependencies(compile.allDependencies, I0Plugin.JAVA_EXTENSIONS)
+        checkDependencies(compile.allDependencies, I0Plugin.JAVA_COMPONENT_API)
         checkDependencies(compile.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0'])
     }
 
@@ -39,26 +39,12 @@ class I0PluginTest {
     public void should_add_java_basic_runtime_dependencies() {
         Configuration runtime = project.configurations.getByName("runtime")
 
-        checkDependencies(runtime.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0', 'org.hibernate:hibernate-validator:4.3.0.Final'])
-    }
-
-    @Test
-    public void should_add_persistence_compile_dependencies() {
-        Configuration compile = project.configurations.getByName("compile")
-
-        checkDependencies(compile.allDependencies, I0Plugin.PERSISTENCE_API)
-    }
-
-    @Test
-    public void should_add_persistence_runtime_dependencies() {
-        Configuration runtime = project.configurations.getByName("runtime")
-
-        checkDependencies(runtime.allDependencies, I0Plugin.HIBERNATE)
+        checkDependencies(runtime.allDependencies, I0Plugin.IMPLEMENTATIONS)
     }
 
     private void checkDependencies(DependencySet dependencies, ArrayList<String> expected) {
         for (dependency in expected) {
-            if (dependencies.findAll {"$it.group:$it.name:$it.version" == dependency}.empty)
+            if (dependencies.findAll { "$it.group:$it.name:$it.version" == dependency }.empty)
                 fail("'$dependency' should be add to dependencies")
         }
     }

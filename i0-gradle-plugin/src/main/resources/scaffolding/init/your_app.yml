@@ -1,0 +1,37 @@
+# This is an application configuration. The name of the file will be used as your application name.
+# You can launch your application by using application name and environment profile.
+#
+# Here are an example of the configuration
+
+# Package where the REST resources stay
+# api: com.yourcompany.project.appplication.api
+
+# Package where other Servlets stay
+# servlets: com.yourcompany.project.appplication.servlets
+
+# Package where filters stay
+# filters: com.yourcompany.project.appplication.filters
+
+# Package where Guice modules/service context stay
+# service-modules: com.yourcompany.project.appplication.services
+
+# A shortcut for all above. It will treat api sub package as api, servlets as web servlets, filters as web filters
+# and services for Guice module
+# root: com.yourcompany.project.application
+
+# The name of your persistence unit
+# persist-unit: domain
+
+# Environment profiles. Mostly for different database configuration etc.
+# env:
+#   development:
+#     database:
+#       driver: org.h2.Driver
+#       url: jdbc:h2:mem
+#       user: sa
+#       password:
+# You can also specify environment specific services, api, servlets or filters. Root shortcut is not applicable in profile
+#     api:
+#     servelts:
+#     services:
+#     filters:

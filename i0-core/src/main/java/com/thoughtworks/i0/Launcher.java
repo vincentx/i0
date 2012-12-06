@@ -1,5 +1,7 @@
 package com.thoughtworks.i0;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.inject.Module;
@@ -14,6 +16,7 @@ import com.thoughtworks.i0.guice.PackageScanningServiceModule;
 import com.thoughtworks.i0.guice.PackageScanningServletModule;
 import com.thoughtworks.i0.server.JettyServer;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -125,4 +128,18 @@ public class Launcher {
         return packages;
     }
 
+    public static void main(String... arguments) throws Exception {
+        if (arguments.length < 2) {
+            System.out.println("[application config] [env] [port]");
+            System.exit(-1);
+        }
+
+        String config = arguments[0];
+        String environment = arguments[1];
+        int port = arguments.length == 2 ? 8080 : Integer.parseInt(arguments[2]);
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        ApplicationConfiguration configuration = mapper.readValue(new File("./" + config + ".yml"), ApplicationConfiguration.class);
+        new Launcher(config, configuration, environment, port).launch(true);
+    }
 }
