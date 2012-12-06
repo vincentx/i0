@@ -2,9 +2,8 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.7
 
-group = 'com.thoughtworks'
-name = 'i0-core'
-version = '1.0'
+group = 'com.thoughtworks.i0'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
@@ -38,4 +37,14 @@ dependencies {
     testCompile "junit:junit:$junitVersion"
     testCompile "org.mockito:mockito-all:$mockitoVersion"
     testCompile "org.eclipse.jetty:jetty-client:$jettyVersion"
+}
+
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repository'))
+        }
+    }
 }
