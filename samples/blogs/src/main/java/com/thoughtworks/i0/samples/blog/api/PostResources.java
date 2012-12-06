@@ -19,14 +19,11 @@ public class PostResources {
     @Inject
     public PostResources(EntityManager entityManager) {
         this.entityManager = entityManager;
-        entityManager.persist(new Post("test", "test"));
     }
 
     @GET
     public List<Post> all() {
-        List<Post> posts = entityManager.createQuery("select t from Post t", Post.class).getResultList();
-        System.out.println("=======================" + posts.size());
-        return posts;
+        return entityManager.createQuery("select t from Post t", Post.class).getResultList();
     }
 
 }
