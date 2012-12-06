@@ -1,0 +1,23 @@
+allprojects {
+	group = 'com.thoughtworks.i0'
+	version = '0.1.0'
+
+	repositories {
+    	mavenCentral()
+	}
+
+	project.ext {
+    	junitVersion = '4.10'
+    	mockitoVersion = '1.9.5-rc1'
+	}	
+
+	apply plugin: 'maven'
+
+	uploadArchives {
+    	repositories {
+        	mavenDeployer {
+            	repository(url: uri('../repository'))
+        	}
+    	}
+	}
+}

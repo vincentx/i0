@@ -5,17 +5,12 @@ sourceCompatibility = 1.7
 group = 'com.thoughtworks.i0'
 version = '0.1.0'
 
-repositories {
-    mavenCentral()
-}
-
 project.ext {
     jettyVersion = '9.0.0.M0'
     jerseyVersion = '1.16'
     guavaVersion = '13.0.1'
     guiceVersion = '3.0'
 
-    junitVersion = '4.10'
     mockitoVersion = '1.9.5-rc1'
 }
 
@@ -37,14 +32,4 @@ dependencies {
     testCompile "junit:junit:$junitVersion"
     testCompile "org.mockito:mockito-all:$mockitoVersion"
     testCompile "org.eclipse.jetty:jetty-client:$jettyVersion"
-}
-
-apply plugin: 'maven'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('../repository'))
-        }
-    }
 }
