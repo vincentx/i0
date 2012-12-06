@@ -24,6 +24,8 @@ class I0Plugin implements Plugin<Project> {
             compile('com.thoughtworks.i0:i0-core:0.1.0') {
                 transitive = false
             }
+
+            runtime('com.thoughtworks.i0:i0-core:0.1.0')
         }
     }
 }

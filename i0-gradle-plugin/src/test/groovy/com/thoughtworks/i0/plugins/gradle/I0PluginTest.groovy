@@ -35,6 +35,13 @@ class I0PluginTest {
         checkDependencies(compile.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0'])
     }
 
+    @Test
+    public void should_add_runtime_dependencies() {
+        Configuration runtime = project.configurations.getByName("runtime")
+
+        checkDependencies(runtime.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0'])
+    }
+
     private void checkDependencies(DependencySet dependencies, ArrayList<String> expected) {
         for (dependency in expected) {
             if (dependencies.findAll {"$it.group:$it.name:$it.version" == dependency}.empty)
