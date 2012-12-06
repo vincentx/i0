@@ -1,0 +1,12 @@
+buildscript {
+	repositories {
+		mavenRepo url:'https://github.com/vincentx/i0/raw/master/repository'
+	}
+
+    dependencies {
+        classpath 'com.thoughtworks.i0:i0-gradle-plugin:0.1.0'
+    }
+}
+
+apply plugin: 'i0'
+

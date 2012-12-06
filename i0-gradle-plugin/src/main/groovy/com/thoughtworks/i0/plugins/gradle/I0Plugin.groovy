@@ -21,7 +21,7 @@ class I0Plugin implements Plugin<Project> {
         project.dependencies {
             JAVAX_DEPENDENCIES.each {compile it}
             FUNCTIONAL_JAVA.each {compile it}
-            compile 'com.thoughtworks.i0:i0-core:0.1.0' {
+            compile('com.thoughtworks.i0:i0-core:0.1.0') {
                 transitive = false
             }
         }
