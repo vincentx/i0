@@ -3,6 +3,7 @@ package com.thoughtworks.i0.guice;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import org.eclipse.jetty.client.HttpClient;
@@ -59,6 +60,7 @@ public class PackageScanningServletModuleTest {
         server = new Server(8080);
         ServletContextHandler handler = new ServletContextHandler(server, "/", NO_SESSIONS);
         handler.addFilter(GuiceFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        handler.addFilter(PersistFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         handler.addServlet(DefaultServlet.class, "/*");
 
         handler.addEventListener(new GuiceServletContextListener() {

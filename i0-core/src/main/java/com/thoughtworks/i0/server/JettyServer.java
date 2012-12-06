@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
@@ -39,6 +40,9 @@ public class JettyServer {
         scanServlets(application, modules);
 
         scanApi(application, modules);
+
+        for (String persistenceUnit : application.persistence())
+            modules.add(new JpaPersistModule(persistenceUnit));
 
         ServletContextHandler handler = new ServletContextHandler(server, rootPath(application), NO_SESSIONS);
         handler.addFilter(GuiceFilter.class, "/*", EnumSet.of(REQUEST));

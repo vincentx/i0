@@ -13,6 +13,7 @@ public abstract class Application {
 
     private final ImmutableSet.Builder<String> servlets = new ImmutableSet.Builder<>();
     private final ImmutableSet.Builder<String> apis = new ImmutableSet.Builder<>();
+    private final ImmutableSet.Builder<String> persistenceUnits = new ImmutableSet.Builder<>();
     private final ImmutableSet.Builder<Module> modules = new ImmutableSet.Builder<>();
 
 
@@ -66,6 +67,14 @@ public abstract class Application {
     protected void root(String packageName) {
         api(packageName + ".api");
         servlets(packageName + ".servlets");
+    }
+
+    protected void persistence(String... units) {
+        persistenceUnits.add(units);
+    }
+
+    public Set<String> persistence() {
+        return persistenceUnits.build();
     }
 
     public void standalone() throws Exception {

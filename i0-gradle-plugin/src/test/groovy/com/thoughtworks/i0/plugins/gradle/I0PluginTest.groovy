@@ -27,7 +27,7 @@ class I0PluginTest {
     }
 
     @Test
-    public void should_add_compile_dependencies() {
+    public void should_add_java_basic_compile_dependencies() {
         Configuration compile = project.configurations.getByName("compile")
 
         checkDependencies(compile.allDependencies, I0Plugin.JAVAX_DEPENDENCIES)
@@ -36,10 +36,24 @@ class I0PluginTest {
     }
 
     @Test
-    public void should_add_runtime_dependencies() {
+    public void should_add_java_basic_runtime_dependencies() {
         Configuration runtime = project.configurations.getByName("runtime")
 
-        checkDependencies(runtime.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0'])
+        checkDependencies(runtime.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0', 'org.hibernate:hibernate-validator:4.3.0.Final'])
+    }
+
+    @Test
+    public void should_add_persistence_compile_dependencies() {
+        Configuration compile = project.configurations.getByName("compile")
+
+        checkDependencies(compile.allDependencies, I0Plugin.PERSISTENCE_API)
+    }
+
+    @Test
+    public void should_add_persistence_runtime_dependencies() {
+        Configuration runtime = project.configurations.getByName("runtime")
+
+        checkDependencies(runtime.allDependencies, I0Plugin.HIBERNATE)
     }
 
     private void checkDependencies(DependencySet dependencies, ArrayList<String> expected) {

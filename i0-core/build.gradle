@@ -28,6 +28,7 @@ dependencies {
 
     compile "com.google.inject:guice:$guiceVersion"
     compile "com.google.inject.extensions:guice-servlet:$guiceVersion"
+    compile "com.google.inject.extensions:guice-persist:$guiceVersion"
 
     testCompile "junit:junit:$junitVersion"
     testCompile "org.mockito:mockito-all:$mockitoVersion"
