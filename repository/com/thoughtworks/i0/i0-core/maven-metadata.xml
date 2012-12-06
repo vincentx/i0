@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.thoughtworks.i0</groupId>
-  <artifactId>i0-gradle-plugin</artifactId>
+  <artifactId>i0-core</artifactId>
   <version>0.1.0</version>
   <versioning>
     <versions>
       <version>0.1.0</version>
     </versions>
-    <lastUpdated>20121206030416</lastUpdated>
+    <lastUpdated>20121206030441</lastUpdated>
   </versioning>
 </metadata>

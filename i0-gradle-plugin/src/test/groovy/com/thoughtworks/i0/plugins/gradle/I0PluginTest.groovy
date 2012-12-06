@@ -30,10 +30,9 @@ class I0PluginTest {
     public void should_add_compile_dependencies() {
         Configuration compile = project.configurations.getByName("compile")
 
-        checkDependencies(compile.allDependencies,
-                ['javax.inject:javax.inject:1',
-                 'javax.servlet:servlet-api:3.0',
-                 'javax.annotation:jsr-305:2.0.1'])
+        checkDependencies(compile.allDependencies, I0Plugin.JAVAX_DEPENDENCIES)
+        checkDependencies(compile.allDependencies, I0Plugin.FUNCTIONAL_JAVA)
+        checkDependencies(compile.allDependencies, ['com.thoughtworks.i0:i0-core:0.1.0'])
     }
 
     private void checkDependencies(DependencySet dependencies, ArrayList<String> expected) {
