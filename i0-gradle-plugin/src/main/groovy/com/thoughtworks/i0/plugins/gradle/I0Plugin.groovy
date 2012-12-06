@@ -3,6 +3,7 @@ package com.thoughtworks.i0.plugins.gradle
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.bundling.Jar
 
 class I0Plugin implements Plugin<Project> {
 
@@ -45,8 +46,26 @@ class I0Plugin implements Plugin<Project> {
                 transitive = true
             }
         }
-        project.configurations.getByName('runtime').exclude(group: 'org.eclipse.jetty', module: 'jetty-project')
+        project.configurations.getByName('runtime')
+                .exclude(group: 'org.eclipse.jetty', module: 'jetty-project')
+                .exclude(group: 'javax.persistence', module: 'persistence-api', version: '1.0')
+                .exclude(group: 'javax.servlet', module: 'servlet-api', version: '2.5')
 
         project.task('init', type: InitTask)
+
+        project.task('deployJar', type: Jar, dependsOn: 'jar') {
+            baseName = project.name + '-deploy'
+            def deps = configurations.runtime + configurations.archives
+            def depClasses = { deps.collect { it.isDirectory() ? it : zipTree(it) } }
+            from(depClasses) {
+                exclude 'META-INF/MANIFEST.MF'
+                exclude '**/*.RSA'
+                exclude '**/*.SF'
+                exclude '**/*.DSA'
+            }
+            manifest {
+                attributes 'Main-Class': 'com.thoughtworks.i0.Launcher'
+            }
+        }
     }
 }
