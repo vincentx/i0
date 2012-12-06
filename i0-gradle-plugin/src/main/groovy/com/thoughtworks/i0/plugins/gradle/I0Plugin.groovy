@@ -6,8 +6,12 @@ import org.gradle.api.plugins.JavaPlugin
 
 class I0Plugin implements Plugin<Project> {
 
-    final static def JAVAX_DEPENDENCIES = ['javax.servlet:servlet-api:3.0', 'javax.inject:javax.inject:1',
-            'javax.annotation:jsr-305:2.0.1', 'javax.validation:validation-api:1.0.0.GA']
+    final static def JAVAX_DEPENDENCIES = [
+            'javax.servlet:servlet-api:3.0',
+            'javax.inject:javax.inject:1',
+            'javax.annotation:jsr-305:2.0.1',
+            'javax.validation:validation-api:1.0.0.GA',
+            'javax.ws.rs:jsr311-api:1.1.1']
 
     final static def FUNCTIONAL_JAVA = ['com.google.guava:guava:13.0.1']
 
