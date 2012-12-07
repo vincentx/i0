@@ -104,11 +104,12 @@ public class Launcher {
             properties.put("javax.persistence.jdbc.user", database.getUser());
             properties.put("javax.persistence.jdbc.password", database.getPassword());
         }
-        for (String key : database.getProperties().keySet())
-            if (DatabaseConfiguration.jpaProperties.contains(key))
-                properties.put("javax.persistence." + key, database.getProperties().get(key));
-            else
-                properties.put(key, database.getProperties().get(key));
+        if (database.getProperties() != null)
+            for (String key : database.getProperties().keySet())
+                if (DatabaseConfiguration.jpaProperties.contains(key))
+                    properties.put("javax.persistence." + key, database.getProperties().get(key));
+                else
+                    properties.put(key, database.getProperties().get(key));
         modules.add(new JpaPersistModule(configuration.getPersistUnit()).properties(properties));
     }
 
