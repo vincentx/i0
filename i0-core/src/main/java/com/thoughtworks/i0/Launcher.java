@@ -60,16 +60,15 @@ public class Launcher {
 
     private Set<String> webPackages(EnvironmentConfiguration environment) {
         Set<String> packages = new HashSet<>();
-        if (configuration == null) return packages;
         if (configuration.getRootPackage() != null) {
             packages.add(configuration.getRootPackage() + ".servlets");
             packages.add(configuration.getRootPackage() + ".filters");
         }
-        packages.addAll(configuration.getServletPackages());
-        packages.addAll(configuration.getFilterPackages());
+        if (configuration.getServletPackages() != null) packages.addAll(configuration.getServletPackages());
+        if (configuration.getFilterPackages() != null) packages.addAll(configuration.getFilterPackages());
         if (environment == null) return packages;
-        packages.addAll(environment.getServletPackages());
-        packages.addAll(environment.getFilterPackages());
+        if (environment.getServicePackages() != null) packages.addAll(environment.getServletPackages());
+        if (environment.getFilterPackages() != null) packages.addAll(environment.getFilterPackages());
         return packages;
     }
 
@@ -87,22 +86,21 @@ public class Launcher {
 
     private Set<String> apiPackages(EnvironmentConfiguration environment) {
         final Set<String> packages = new HashSet<>();
-        if (configuration.getRootPackage() != null)
-            packages.add(configuration.getRootPackage() + ".api");
+        if (configuration.getRootPackage() != null) packages.add(configuration.getRootPackage() + ".api");
         packages.add("com.fasterxml.jackson.jaxrs.json");
-        packages.addAll(configuration.getApiPackages());
-        if (environment != null) packages.addAll(environment.getApiPackages());
+        if (configuration.getApiPackages() != null) packages.addAll(configuration.getApiPackages());
+        if (environment != null && environment.getApiPackages() != null) packages.addAll(environment.getApiPackages());
         return packages;
     }
 
     private void persist(Set<Module> modules, EnvironmentConfiguration environment) {
-        if (environment == null) return;
         DatabaseConfiguration database = environment.getDatabaseConfiguration();
         if (database == null) return;
         Properties properties = new Properties();
         properties.put("javax.persistence.jdbc.driver", database.getDriver());
         properties.put("javax.persistence.jdbc.url", database.getUrl());
-        if (!database.getPassword().isEmpty() && !database.getUser().isEmpty()) {
+        if (database.getPassword() != null && !database.getPassword().isEmpty() &&
+                database.getUser() != null && !database.getUser().isEmpty()) {
             properties.put("javax.persistence.jdbc.user", database.getUser());
             properties.put("javax.persistence.jdbc.password", database.getPassword());
         }
@@ -124,8 +122,8 @@ public class Launcher {
         final Set<String> packages = new HashSet<>();
         if (configuration.getRootPackage() != null)
             packages.add(configuration.getRootPackage() + ".services");
-        packages.addAll(configuration.getServletPackages());
-        if (environment != null) packages.addAll(environment.getServicePackages());
+        if (configuration.getServletPackages() != null) packages.addAll(configuration.getServletPackages());
+        if (environment.getServicePackages() != null) packages.addAll(environment.getServicePackages());
         return packages;
     }
 
