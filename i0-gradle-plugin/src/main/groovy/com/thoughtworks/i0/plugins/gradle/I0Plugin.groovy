@@ -55,8 +55,9 @@ class I0Plugin implements Plugin<Project> {
 
         project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
             baseName = project.name + '-deploy'
-            def depClasses = { project.configurations.getByName("runtime").files.collect { it.isDirectory() ? it : project.zipTree(it) } }
-            from(depClasses) {
+            def archives = project.configurations.getByName("runtime").files + project.configurations.getByName("archive").allArtifacts.files
+            def classes = { archives.collect { it.isDirectory() ? it : project.zipTree(it) } }
+            from(classes) {
                 exclude 'META-INF/MANIFEST.MF'
                 exclude '**/*.RSA'
                 exclude '**/*.SF'
