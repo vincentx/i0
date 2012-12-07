@@ -56,12 +56,12 @@ class I0Plugin implements Plugin<Project> {
         project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
             baseName = project.name + '-deploy'
 
-            from project.configurations.runtime.asFileTree.files.collect { zipTree(it) } {
-                exclude 'META-INF/MANIFEST.MF'
-                exclude '**/*.RSA'
-                exclude '**/*.SF'
-                exclude '**/*.DSA'
-            }
+//            from project.configurations.runtime.asFileTree.files.collect { zipTree(it) } {
+//                exclude 'META-INF/MANIFEST.MF'
+//                exclude '**/*.RSA'
+//                exclude '**/*.SF'
+//                exclude '**/*.DSA'
+//            }
 
             manifest {
                 attributes 'Main-Class': 'com.thoughtworks.i0.Launcher'
