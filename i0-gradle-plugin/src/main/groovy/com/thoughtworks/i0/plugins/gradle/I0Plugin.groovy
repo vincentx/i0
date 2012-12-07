@@ -57,7 +57,7 @@ class I0Plugin implements Plugin<Project> {
             baseName = project.name + '-deploy'
 
             from {project.configurations.runtime.collect { project.zipTree it }} {
-                exclude ['META-INF/MANIFEST.MF', '**/*.RSA', '**/*.SF', '**/*.DSA']
+                excludes ['META-INF/MANIFEST.MF', '**/*.RSA', '**/*.SF', '**/*.DSA']
             }
             from {project.configurations.default.allArtifacts.files.collect { project.zipTree it} }
 
