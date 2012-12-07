@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.inject.Module;
+import com.google.inject.persist.PersistFilter;
 import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
@@ -111,6 +112,12 @@ public class Launcher {
                 else
                     properties.put(key, database.getProperties().get(key));
         modules.add(new JpaPersistModule(configuration.getPersistUnit()).properties(properties));
+        modules.add(new ServletModule() {
+            @Override
+            protected void configureServlets() {
+                filter("/*").through(PersistFilter.class);
+            }
+        });
     }
 
     private void service(Set<Module> modules, EnvironmentConfiguration environment) {
