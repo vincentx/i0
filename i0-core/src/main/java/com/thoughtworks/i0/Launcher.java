@@ -60,6 +60,7 @@ public class Launcher {
 
     private Set<String> webPackages(EnvironmentConfiguration environment) {
         Set<String> packages = new HashSet<>();
+        if (configuration == null) return packages;
         if (configuration.getRootPackage() != null) {
             packages.add(configuration.getRootPackage() + ".servlets");
             packages.add(configuration.getRootPackage() + ".filters");

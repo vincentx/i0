@@ -1,6 +1,5 @@
 package com.thoughtworks.i0;
 
-import com.thoughtworks.i0.Launcher;
 import com.thoughtworks.i0.config.builder.ApplicationConfig;
 import com.thoughtworks.i0.server.JettyServer;
 import org.eclipse.jetty.client.HttpClient;
