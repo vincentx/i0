@@ -43,8 +43,8 @@ public class DatabaseConfiguration {
     public Properties toProperties() {
         Properties properties = new Properties();
 
-        properties.put("javax.persistence.jdbc.driver", driver);
-        properties.put("javax.persistence.jdbc.url", url);
+        if (driver != null) properties.put("javax.persistence.jdbc.driver", driver);
+        if (url != null) properties.put("javax.persistence.jdbc.url", url);
         if (password != null && !password.isEmpty() &&
                 user != null && !user.isEmpty()) {
             properties.put("javax.persistence.jdbc.user", user);

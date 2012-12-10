@@ -1,6 +1,6 @@
 class application {
   file { "config.yml":
-      path => "/opt/app",
+      path => "/opt/app/config.yml",
       ensure  => present,
       mode    => 0644,
       source  => "puppet:///modules/application/development.yml"

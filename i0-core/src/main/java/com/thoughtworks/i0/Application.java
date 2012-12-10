@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 public @interface Application {
     String name();
 
-    String persistUnit() default "domain";
+    String persistUnit() default "";
 
     String root() default "";
 
