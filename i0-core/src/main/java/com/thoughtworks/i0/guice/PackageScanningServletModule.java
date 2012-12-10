@@ -4,9 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.core.spi.scanning.PackageNamesScanner;
-import com.sun.jersey.core.spi.scanning.Scanner;
-import com.sun.jersey.spi.scanning.AnnotationScannerListener;
+import com.thoughtworks.i0.util.ClassScanner;
 
 import javax.servlet.Filter;
 import javax.servlet.annotation.WebFilter;
@@ -18,17 +16,15 @@ import java.util.Map;
 import static com.google.common.collect.Iterables.toArray;
 
 public class PackageScanningServletModule extends ServletModule {
-    private final Scanner scanner;
+    private final ClassScanner scanner;
 
     public PackageScanningServletModule(String... packages) {
-        this.scanner = new PackageNamesScanner(packages);
+        this.scanner = new ClassScanner(packages);
     }
 
     @Override
     protected void configureServlets() {
-        AnnotationScannerListener components = new AnnotationScannerListener(WebServlet.class, WebFilter.class);
-        scanner.scan(components);
-        for (Class<?> component : components.getAnnotatedClasses())
+        for (Class<?> component : scanner.findByAnnotation(WebServlet.class, WebFilter.class))
             if (HttpServlet.class.isAssignableFrom(component))
                 bind(component.getAnnotation(WebServlet.class), component);
             else if (Filter.class.isAssignableFrom(component))

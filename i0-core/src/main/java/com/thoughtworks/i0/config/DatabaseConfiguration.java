@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import static java.util.Arrays.asList;
 
@@ -39,23 +40,22 @@ public class DatabaseConfiguration {
         this.properties = properties;
     }
 
-    public String getDriver() {
-        return driver;
-    }
+    public Properties toProperties() {
+        Properties properties = new Properties();
 
-    public String getUrl() {
-        return url;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Map<String, String> getProperties() {
+        properties.put("javax.persistence.jdbc.driver", driver);
+        properties.put("javax.persistence.jdbc.url", url);
+        if (password != null && !password.isEmpty() &&
+                user != null && !user.isEmpty()) {
+            properties.put("javax.persistence.jdbc.user", user);
+            properties.put("javax.persistence.jdbc.password", password);
+        }
+        if (this.properties != null)
+            for (String key : this.properties.keySet())
+                if (jpaProperties.contains(key))
+                    properties.put("javax.persistence." + key, this.properties.get(key));
+                else
+                    properties.put(key, this.properties.get(key));
         return properties;
     }
 
