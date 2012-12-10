@@ -11,7 +11,6 @@ import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.guice.PackageScanningServiceModule;
 import com.thoughtworks.i0.guice.PackageScanningServletModule;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -57,7 +56,7 @@ public class ApplicationModule extends AbstractModule {
         configWeb();
         configApi();
         configService();
-        persisUnit();
+        persistUnit();
     }
 
     protected void configService() {
@@ -91,9 +90,9 @@ public class ApplicationModule extends AbstractModule {
         if (packages.size() > 0) install(new PackageScanningServletModule(toArray(packages, String.class)));
     }
 
-    private void persisUnit() {
-        if (application.persisUnit() != null && !application.persisUnit().isEmpty()) return;
-        install(new JpaPersistModule(application.persisUnit()).properties(database()));
+    private void persistUnit() {
+        if (application.persistUnit() == null || application.persistUnit().isEmpty()) return;
+        install(new JpaPersistModule(application.persistUnit()).properties(database()));
         install(new ServletModule() {
             @Override
             protected void configureServlets() {

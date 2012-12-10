@@ -2,6 +2,7 @@ package com.thoughtworks.i0;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.inject.Module;
 import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.server.JettyServer;
 import com.thoughtworks.i0.util.ClassScanner;
@@ -19,13 +20,12 @@ public class Launcher {
     private final Configuration configuration;
 
     public Launcher(Configuration configuration) throws Exception {
-        this.modules = scanApplicationModules();
-        this.configuration = configuration;
+        this(scanApplicationModules(), configuration);
     }
 
-    private Map<String, ApplicationModule> scanApplicationModules() throws Exception {
+    private static Map<String, ApplicationModule> scanApplicationModules() throws Exception {
         Map<String, ApplicationModule> modules = new HashMap<>();
-        ClassScanner scanner = new ClassScanner("");
+        ClassScanner scanner = new ClassScanner(Launcher.class.getProtectionDomain().getCodeSource());
 
         Set<Class<?>> applicationModules = scanner.findBySuperClass(ApplicationModule.class);
 

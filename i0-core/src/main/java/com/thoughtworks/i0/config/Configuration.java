@@ -16,8 +16,8 @@ public class Configuration {
     @JsonCreator
     public Configuration(@JsonProperty("database") DatabaseConfiguration database,
                          @JsonProperty("http") HttpConfiguration http) {
-        this.database = database == null ? database : new DatabaseConfiguration("", "", "", "", new HashMap<String, String>());
-        this.http = http == null ? new HttpConfigurationBuilder().port(8080).build() : http;
+        this.database = database != null ? database : new DatabaseConfiguration("", "", "", "", new HashMap<String, String>());
+        this.http = http != null ? http : new HttpConfiguration(8080);
     }
 
     public DatabaseConfiguration getDatabase() {

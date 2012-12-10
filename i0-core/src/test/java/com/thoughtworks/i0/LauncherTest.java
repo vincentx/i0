@@ -9,6 +9,7 @@ import org.eclipse.jetty.client.HttpClient;
 import org.junit.After;
 import org.junit.Test;
 
+import javax.inject.Inject;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -92,10 +93,6 @@ public class LauncherTest {
         if (client != null && client.isRunning()) client.stop();
     }
 
-    private Application getApplication(Class<?> clazz) {
-        return clazz.getAnnotation(Application.class);
-    }
-
     @Application(name = "test",
             servlets = "com.thoughtworks.i0.server.sample.simple.servlets")
     static class TestServletModule extends ApplicationModule {
@@ -127,5 +124,4 @@ public class LauncherTest {
             });
         }
     }
-
 }
