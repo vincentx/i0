@@ -18,7 +18,8 @@ class I0Plugin implements Plugin<Project> {
             'javax.servlet:servlet-api:3.0',
             'javax.ws.rs:jsr311-api:1.1.1',
             'org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final',
-            'com.fasterxml.jackson.core:jackson-annotations:2.1.1'
+            'com.fasterxml.jackson.core:jackson-annotations:2.1.1',
+            'com.google.inject:guice:3.0'
     ]
 
     final static def IMPLEMENTATIONS = [
@@ -56,10 +57,10 @@ class I0Plugin implements Plugin<Project> {
         project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
             baseName = project.name + '-deploy'
 
-            from {project.configurations.runtime.collect { project.zipTree it }} {
+            from { project.configurations.runtime.collect { project.zipTree it } } {
                 exclude 'META-INF/MANIFEST.MF', '**/*.RSA', '**/*.SF', '**/*.DSA'
             }
-            from {project.configurations.default.allArtifacts.files.collect { project.zipTree it} }
+            from { project.configurations.default.allArtifacts.files.collect { project.zipTree it } }
 
             manifest {
                 attributes 'Main-Class': 'com.thoughtworks.i0.Launcher'
