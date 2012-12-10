@@ -54,6 +54,11 @@ public class Launcher {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Configuration configuration = mapper.readValue(new File("./config.yml"), Configuration.class);
 
-        new Launcher(configuration).launch(true, arguments[0]);
+        Launcher launcher = new Launcher(configuration);
+        if (arguments.length > 0) launcher.launch(true, arguments[0]);
+        else if (launcher.modules.size() == 1) {
+            launcher.launch(true, launcher.modules.keySet().iterator().next());
+        }
+
     }
 }

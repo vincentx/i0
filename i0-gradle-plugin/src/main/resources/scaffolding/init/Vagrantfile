@@ -10,8 +10,8 @@ Vagrant::Config.run do |config|
   config.vm.share_folder "application", "/opt/app", "./build/libs"
 
   config.vm.provision :puppet do |puppet|
-     puppet.module_path = ["src/main/puppet", "lib/modules"]
-     puppet.manifests_path = "src/main/puppet"
+     puppet.module_path = ["lib/modules", "src/main/puppet/modules"]
+     puppet.manifests_path = "src/main/puppet/manifests"
      puppet.manifest_file  = "development.pp"
   end
 end
