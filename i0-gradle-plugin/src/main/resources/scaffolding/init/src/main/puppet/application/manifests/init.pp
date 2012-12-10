@@ -14,10 +14,10 @@ class application {
       path => "/opt/app",
       ensure  => present,
       mode    => 0644,
-      source  => "puppet///modules/application/development.yml"
+      source  => "puppet:///modules/application/development.yml"
   }
   exec { "start-server":
-      command => "" # /usr/bin/java -jar your-deploy.jar appname &,
+      command => "",  # /usr/bin/java -jar your-deploy.jar appname &,
       cwd => "/opt/app"
   }
 }

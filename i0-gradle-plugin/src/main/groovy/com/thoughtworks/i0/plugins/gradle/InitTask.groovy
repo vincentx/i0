@@ -17,9 +17,7 @@ class InitTask extends DefaultTask {
 
     def copy(InputStream input, File target) {
         def reader = input.newReader()
-        target.withWriter { writer ->
-            writer << reader
-        }
+        target.withWriter { writer -> writer << reader }
         reader.close()
     }
 
