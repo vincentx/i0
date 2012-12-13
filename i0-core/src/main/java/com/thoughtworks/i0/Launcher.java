@@ -25,13 +25,7 @@ public class Launcher {
     private static Map<String, ApplicationModule> scanApplicationModules() throws Exception {
         Map<String, ApplicationModule> modules = new HashMap<>();
 
-        ClassScanner scanner = null;
-        String packages = System.getProperty("module_packages");
-        if(packages != null){
-            scanner = new ClassScanner(packages.split(","));
-        }else{
-            scanner = new ClassScanner(Launcher.class.getProtectionDomain().getCodeSource());
-        }
+        ClassScanner scanner = resolveClassScanner();
 
         Set<Class<?>> applicationModules = scanner.findBySuperClass(ApplicationModule.class);
 
@@ -41,6 +35,17 @@ public class Launcher {
                 modules.put(applicationModule.getApplication().name(), applicationModule);
             }
         return modules;
+    }
+
+    private static ClassScanner resolveClassScanner() {
+        ClassScanner scanner;
+        String packages = System.getProperty("module_packages");
+        if (packages != null) {
+            scanner = new ClassScanner(packages.split(","));
+        } else {
+            scanner = new ClassScanner(Launcher.class.getProtectionDomain().getCodeSource());
+        }
+        return scanner;
     }
 
     public Launcher(Map<String, ApplicationModule> modules, Configuration configuration) {
