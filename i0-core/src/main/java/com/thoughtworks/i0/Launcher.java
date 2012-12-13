@@ -64,6 +64,8 @@ public class Launcher {
         if (arguments.length > 0) launcher.launch(true, arguments[0]);
         else if (launcher.modules.size() == 1) {
             launcher.launch(true, launcher.modules.keySet().iterator().next());
+        } else {
+            System.err.println("Invalid scenario.");
         }
 
     }
