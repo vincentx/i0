@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.eclipse.jetty.drafts</groupId>
+  <artifactId>javax.websocket-api</artifactId>
+  <versioning>
+    <release>0.0.006.draft</release>
+    <versions>
+      <version>0.0.006.draft</version>
+    </versions>
+    <lastUpdated>20121212111049</lastUpdated>
+  </versioning>
+</metadata>
