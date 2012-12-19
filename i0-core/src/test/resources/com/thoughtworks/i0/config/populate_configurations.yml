@@ -1,0 +1,36 @@
+http:
+  host: 127.0.0.1
+  port: 8081
+  min_thread: 10
+  max_thread: 1024
+  acceptor_threads: 10
+  selector_threads: 40
+  accept_queue_size: 100
+  max_idle_time: 1s
+  idle_timeout: 500ms
+  so_linger_time: 500ms
+  ssl:
+    key_store_path: /etc/key.store
+    key_store_password: password
+    key_store_type: JKS
+    key_manager_password: managerPassword
+    trust_store_path: /etc/key.store
+    trust_store_password: password
+    trust_store_type: JKS
+logging:
+  level: DEBUG
+  loggers:
+    com.thoughtworks.i0.config.ConfigurationTest: DEBUG
+  console:
+    level: DEBUG
+    format: '%h %l %u %t \"%r\" %s %b'
+    time_zone: GMT
+  file:
+    level: DEBUG
+    format: '%h %l %u %t \"%r\" %s %b'
+    time_zone: GMT
+    filename: example.log
+    archive:
+      name_pattern: 'example-%d.log.zip'
+      max_file_size: 150M
+      max_history: 10
