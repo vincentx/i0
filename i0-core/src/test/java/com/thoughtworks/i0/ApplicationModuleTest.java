@@ -1,10 +1,9 @@
 package com.thoughtworks.i0;
 
-import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.internal.logging.Logging;
 import com.thoughtworks.i0.internal.server.jetty.Embedded;
-import com.thoughtworks.i0.projects.aplication.module.ApplicationModuleTestApplication;
+import com.thoughtworks.i0.projects.application.module.ApplicationModuleTestApplication;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +18,9 @@ public class ApplicationModuleTest {
 
     @Before
     public void before() throws Exception {
-        Logging.configure(config().logging().level(LogLevel.INFO).console().end().build());
-        server = new Embedded(config().http().build());
         ApplicationModuleTestApplication module = new ApplicationModuleTestApplication();
+        Logging.configure(module.getConfiguration().getLogging());
+        server = new Embedded(module.getConfiguration().getHttp());
         server.addServletContext(module.name(), true, module);
         server.start(false);
     }
@@ -59,6 +58,11 @@ public class ApplicationModuleTest {
     public void should_auto_scan_module_and_install_to_module() throws Exception {
         assertThat(get("http://localhost:8080/application/web/c/1"), is("/web/c"));
         assertThat(get("http://localhost:8080/application/web/c/2"), is("/web/c"));
+    }
+
+    @Test
+    public void should_initialize_persist_context() throws Exception {
+        assertThat(get("http://localhost:8080/application/persist/a"), is("domain"));
     }
 
     static class ApplicationModuleWithoutAnnotation extends ApplicationModule {

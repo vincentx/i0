@@ -70,7 +70,7 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
         public static final Setting driver = new Setting() {
             @Override
             public void set(DatabaseConfigurationBuilder config) {
-                config.driver("org.driver.Driver");
+                config.driver("org.h2.Driver");
             }
         };
         public static final Setting tempFile = new Setting() {
@@ -111,6 +111,13 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
                 }
             };
         }
+
+        public static Setting createDrop = new Setting() {
+            @Override
+            public void set(DatabaseConfigurationBuilder config) {
+                config.property("hibernate.hbm2ddl.auto", "create-drop");
+            }
+        };
     }
 
     public ConfigurationBuilder end() {

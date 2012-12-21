@@ -1,5 +1,5 @@
 group = 'com.thoughtworks.i0'
-version = '0.2.0'
+version = '0.2.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -57,6 +57,7 @@ dependencies {
 
     runtime 'org.hibernate:hibernate-entitymanager:4.1.7.Final'
     runtime 'org.hibernate:hibernate-validator:4.3.0.Final'
+    runtime "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:$jacksonVersion"
 
     testCompile "junit:junit:$junitVersion"
     testCompile "org.eclipse.jetty:jetty-client:$jettyVersion"

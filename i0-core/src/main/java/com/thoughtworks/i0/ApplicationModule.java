@@ -2,11 +2,14 @@ package com.thoughtworks.i0;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.persist.PersistFilter;
+import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -54,6 +57,17 @@ public class ApplicationModule extends AbstractModule {
             String currentPackage = getClass().getPackage().getName();
             scan(currentPackage);
             scanResources(application.api(), currentPackage);
+        }
+
+        if (getClass().isAnnotationPresent(PersistUnit.class)) {
+            Preconditions.checkArgument(getConfiguration().getDatabase().isPresent(), "No database configuration found");
+            install(new JpaPersistModule(getClass().getAnnotation(PersistUnit.class).value()).properties(getConfiguration().getDatabase().get().toProperties()));
+            install(new ServletModule() {
+                @Override
+                protected void configureServlets() {
+                    filter("/*").through(PersistFilter.class);
+                }
+            });
         }
     }
 

@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.projects.aplication.module.api;
+package com.thoughtworks.i0.projects.application.module.api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

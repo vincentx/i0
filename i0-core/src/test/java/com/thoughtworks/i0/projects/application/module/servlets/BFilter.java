@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.projects.aplication.module.servlets;
+package com.thoughtworks.i0.projects.application.module.servlets;
 
 import javax.inject.Singleton;
 import javax.servlet.*;
