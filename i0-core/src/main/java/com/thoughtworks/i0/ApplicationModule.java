@@ -76,7 +76,7 @@ public class ApplicationModule extends AbstractModule {
     }
 
     protected final Configuration getConfiguration() {
-        if (!configuration.isPresent()) configuration.of(createDefaultConfiguration(config()));
+        if (!configuration.isPresent()) configuration = of(createDefaultConfiguration(config()));
         return configuration.get();
     }
 
