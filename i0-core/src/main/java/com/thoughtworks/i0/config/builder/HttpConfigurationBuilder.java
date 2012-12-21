@@ -8,7 +8,7 @@ import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 import static com.thoughtworks.i0.config.HttpConfiguration.*;
 
-public class HttpConfigurationBuilder implements ConfigurationBuilder<HttpConfiguration> {
+public class HttpConfigurationBuilder implements Builder<HttpConfiguration> {
     private Optional<String> host = absent();
     private int port = DEFAULT_PORT;
     private int minThread = DEFAULT_MIN_THREAD;
@@ -20,7 +20,12 @@ public class HttpConfigurationBuilder implements ConfigurationBuilder<HttpConfig
     private Optional<Duration> soLingerTime = absent();
     private Duration idleTimeout = DEFAULT_IDLE_TIMEOUT;
 
-    private OptionalConfigurationBuilder<SslConfigurationBuilder, SslConfiguration> ssl = new OptionalConfigurationBuilder<>(new SslConfigurationBuilder());
+    private OptionalBuilder<SslConfigurationBuilder, SslConfiguration> ssl = new OptionalBuilder<>(new SslConfigurationBuilder());
+    private ConfigurationBuilder parent;
+
+    public HttpConfigurationBuilder(ConfigurationBuilder parent) {
+        this.parent = parent;
+    }
 
     public HttpConfigurationBuilder host(String host) {
         this.host = Optional.of(host);
@@ -70,12 +75,16 @@ public class HttpConfigurationBuilder implements ConfigurationBuilder<HttpConfig
         return ssl.builder();
     }
 
+    public ConfigurationBuilder end() {
+        return parent;
+    }
+
     public HttpConfiguration build() {
         return new HttpConfiguration(host, port, minThread, maxThread, maxIdleTime, idleTimeout, acceptorThreads, selectorThreads, acceptQueueSize, soLingerTime,
                 ssl.build());
     }
 
-    public class SslConfigurationBuilder implements ConfigurationBuilder<SslConfiguration> {
+    public class SslConfigurationBuilder implements Builder<SslConfiguration> {
         private Optional<String> keyStorePath = absent();
         private Optional<String> keyStorePassword = absent();
         private Optional<String> keyManagerPassword = absent();

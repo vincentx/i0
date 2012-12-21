@@ -1,12 +1,17 @@
 package com.thoughtworks.i0;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.thoughtworks.i0.config.Configuration;
+import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.internal.util.ClassScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +26,12 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Joiner.on;
+import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Iterables.transform;
 import static com.sun.jersey.api.core.PackagesResourceConfig.PROPERTY_PACKAGES;
+import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
 import static com.thoughtworks.i0.internal.util.ServletAnnotations.LOG_FORMATTER;
 import static com.thoughtworks.i0.internal.util.ServletAnnotations.urlPatterns;
 import static com.thoughtworks.i0.internal.util.TypePredicates.*;
@@ -34,6 +41,8 @@ public class ApplicationModule extends AbstractModule {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private Optional<Configuration> configuration = Optional.absent();
+
     public ApplicationModule() {
         checkState(getClass().isAnnotationPresent(Application.class), "missing @Application annotation for application module '" + getClass().getName() + "'");
         this.application = getClass().getAnnotation(Application.class);
@@ -41,7 +50,38 @@ public class ApplicationModule extends AbstractModule {
 
     @Override
     protected final void configure() {
-        install(new AutoScanningServletModule(getClass().getPackage().getName()));
+        if (application.autoScanning()) {
+            String currentPackage = getClass().getPackage().getName();
+            scan(currentPackage);
+            scanResources(application.api(), currentPackage);
+        }
+    }
+
+    void setConfiguration(Configuration configuration) {
+        this.configuration = of(configuration);
+    }
+
+    protected final Configuration getConfiguration() {
+        return configuration.or(getDefaultConfiguration(config()));
+    }
+
+    protected Configuration getDefaultConfiguration(ConfigurationBuilder config) {
+        return config.http().port(8080).end().build();
+    }
+
+    protected void scan(String... packages) {
+        install(new AutoScanningServletModule(packages));
+    }
+
+    protected void scanResources(final String path, final String... packages) {
+        install(new JerseyServletModule() {
+            @Override
+            protected void configureServlets() {
+                ImmutableSet<String> packageSet = ImmutableSet.<String>builder().add(packages).add("com.fasterxml.jackson.jaxrs.json").build();
+                serve(path).with(GuiceContainer.class, new ImmutableMap.Builder<String, String>()
+                        .put(PROPERTY_PACKAGES, on(";").skipNulls().join(packageSet)).build());
+            }
+        });
     }
 
     public String name() {
@@ -59,9 +99,6 @@ public class ApplicationModule extends AbstractModule {
 
         @Override
         protected void configureServlets() {
-            serve(application.api()).with(GuiceContainer.class, new ImmutableMap.Builder<String, String>()
-                    .put(PROPERTY_PACKAGES, on(";").skipNulls().join(packages)).build());
-
             if (logger.isInfoEnabled())
                 logger.info("Scanning for servlet, filter and module classes in packages:\n  {}", on("\n  ").join(packages));
 

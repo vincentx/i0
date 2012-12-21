@@ -1,12 +1,15 @@
 package com.thoughtworks.i0;
 
-import com.thoughtworks.i0.config.builder.HttpConfigurationBuilder;
+import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
+import com.thoughtworks.i0.config.util.LogLevel;
+import com.thoughtworks.i0.internal.logging.Logging;
 import com.thoughtworks.i0.internal.server.jetty.Embedded;
 import com.thoughtworks.i0.projects.aplication.module.ApplicationModuleTestApplication;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
 import static com.thoughtworks.i0.test.helpers.HttpClientHelper.get;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -16,7 +19,8 @@ public class ApplicationModuleTest {
 
     @Before
     public void before() throws Exception {
-        server = new Embedded(new HttpConfigurationBuilder().build());
+        Logging.configure(config().logging().level(LogLevel.INFO).console().end().build());
+        server = new Embedded(config().http().build());
         ApplicationModuleTestApplication module = new ApplicationModuleTestApplication();
         server.addServletContext(module.name(), true, module);
         server.start(false);

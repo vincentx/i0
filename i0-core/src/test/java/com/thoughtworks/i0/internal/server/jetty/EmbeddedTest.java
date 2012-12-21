@@ -2,8 +2,7 @@ package com.thoughtworks.i0.internal.server.jetty;
 
 import com.google.inject.servlet.ServletModule;
 import com.thoughtworks.i0.config.HttpConfiguration;
-import com.thoughtworks.i0.config.builder.HttpConfigurationBuilder;
-import com.thoughtworks.i0.internal.server.jetty.Embedded;
+import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.test.helpers.HttpClientHelper;
 import org.junit.After;
 import org.junit.Test;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -29,16 +29,16 @@ public class EmbeddedTest {
 
     @Test
     public void should_configure_server_as_http_service() throws Exception {
-        startServer(new HttpConfigurationBuilder().port(8080).build());
+        startServer(config().http().port(8080).build());
         assertThat(HttpClientHelper.get("http://localhost:8080/message"), is("message"));
     }
 
     @Test
     public void should_configure_server_as_https_service() throws Exception {
-        startServer(new HttpConfigurationBuilder().port(8080)
+        startServer(config().http().port(8080)
                 .ssl()
-                    .keyStore(getClass().getResource("test.keystore").getPath(), "password")
-                    .trustStore(getClass().getResource("test.keystore").getPath(), "password")
+                .keyStore(getClass().getResource("test.keystore").getPath(), "password")
+                .trustStore(getClass().getResource("test.keystore").getPath(), "password")
                 .end().build());
         assertThat(HttpClientHelper.get("https://localhost:8080/message"), is("message"));
     }

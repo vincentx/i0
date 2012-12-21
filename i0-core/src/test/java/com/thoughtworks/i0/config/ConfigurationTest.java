@@ -1,8 +1,6 @@
 package com.thoughtworks.i0.config;
 
 import com.google.common.base.Optional;
-import com.thoughtworks.i0.config.builder.HttpConfigurationBuilder;
-import com.thoughtworks.i0.config.builder.LoggingConfigurationBuilder;
 import com.thoughtworks.i0.config.util.Duration;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.config.util.Size;
@@ -13,6 +11,9 @@ import java.io.InputStream;
 
 import static com.thoughtworks.i0.config.Configuration.read;
 import static com.thoughtworks.i0.config.HttpConfiguration.*;
+import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
+import static com.thoughtworks.i0.config.builder.DatabaseConfigurationBuilder.H2;
+import static com.thoughtworks.i0.config.builder.DatabaseConfigurationBuilder.Hibernate;
 import static com.thoughtworks.i0.config.util.Duration.Unit.MILLISECONDS;
 import static com.thoughtworks.i0.config.util.Duration.Unit.SECONDS;
 import static org.hamcrest.CoreMatchers.is;
@@ -22,7 +23,7 @@ public class ConfigurationTest {
 
     @Test
     public void should_use_default_value_for_configuration() throws IOException {
-        Configuration configuration = read(fixture("use_default_value_for_configuration.yml"), Configuration.class);
+        Configuration configuration = read(fixture("use_default_value_for_configuration.yml"));
 
         HttpConfiguration http = configuration.getHttp();
         assertThat(http.getPort(), is(DEFAULT_PORT));
@@ -47,9 +48,9 @@ public class ConfigurationTest {
 
     @Test
     public void should_populate_configurations() throws IOException {
-        Configuration configuration = read(fixture("populate_configurations.yml"), Configuration.class);
+        Configuration configuration = read(fixture("populate_configurations.yml"));
 
-        assertThat(configuration.getHttp(), is(new HttpConfigurationBuilder()
+        assertThat(configuration.getHttp(), is(config().http()
                 .port(8081).host("127.0.0.1")
                 .threadPool(10, 1024)
                 .threads(10, 40)
@@ -66,7 +67,7 @@ public class ConfigurationTest {
                 .end()
                 .build()));
 
-        assertThat(configuration.getLogging(), is(new LoggingConfigurationBuilder()
+        assertThat(configuration.getLogging(), is(config().logging()
                 .level(LogLevel.DEBUG).logger(ConfigurationTest.class, LogLevel.DEBUG)
                 .console()
                 .level(LogLevel.DEBUG)
@@ -85,6 +86,9 @@ public class ConfigurationTest {
                 .end()
                 .end()
                 .build()));
+
+        assertThat(configuration.getDatabase().get(), is(config().database().with(H2.driver, H2.compatible("ORACLE"),
+                H2.privateMemoryDB, Hibernate.dialect("Oracle")).user("sa").password("").build()));
     }
 
     private InputStream fixture(String fixture) {

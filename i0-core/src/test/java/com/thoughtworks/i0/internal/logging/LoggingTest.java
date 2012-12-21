@@ -5,7 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.thoughtworks.i0.config.LoggingConfiguration;
-import com.thoughtworks.i0.config.builder.LoggingConfigurationBuilder;
+import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.config.util.LogLevel;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ import static com.google.common.base.Splitter.on;
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
+import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
 import static com.thoughtworks.i0.config.util.LogLevel.*;
 import static com.thoughtworks.i0.internal.logging.Logging.configure;
 import static org.hamcrest.CoreMatchers.is;
@@ -173,14 +174,14 @@ public class LoggingTest {
 
         @Override
         public LoggingConfiguration config(LogLevel level) {
-            return new LoggingConfigurationBuilder().level(level)
+            return ConfigurationBuilder.config().logging().level(level)
                     .console().format("%m\n")
                     .end().build();
         }
 
         @Override
         public LoggingConfiguration configLogger() {
-            return new LoggingConfigurationBuilder().level(LogLevel.OFF)
+            return ConfigurationBuilder.config().logging().level(LogLevel.OFF)
                     .logger(LoggingTest.class, LogLevel.ERROR)
                     .console().format("%m\n")
                     .end().build();
@@ -219,7 +220,7 @@ public class LoggingTest {
 
         @Override
         public LoggingConfiguration config(LogLevel level) {
-            return new LoggingConfigurationBuilder().level(level)
+            return ConfigurationBuilder.config().logging().level(level)
                     .file().filename(log.getAbsolutePath()).format("%m\n")
                     .end().build();
 
@@ -227,7 +228,7 @@ public class LoggingTest {
 
         @Override
         public LoggingConfiguration configLogger() {
-            return new LoggingConfigurationBuilder().level(LogLevel.OFF)
+            return ConfigurationBuilder.config().logging().level(LogLevel.OFF)
                     .logger(LoggingTest.class, LogLevel.ERROR)
                     .file().filename(log.getAbsolutePath()).format("%m\n")
                     .end().build();

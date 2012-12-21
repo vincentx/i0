@@ -34,3 +34,10 @@ logging:
       name_pattern: 'example-%d.log.zip'
       max_file_size: 150M
       max_history: 10
+database:
+  driver: org.driver.Driver
+  url: jdbc:h2:mem
+  user: sa
+  password:
+  properties:
+    hibernate.dialect: org.hibernate.dialect.OracleDialect

@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.internal;
+package com.thoughtworks.i0.internal.util;
 
 import com.google.inject.Module;
 import com.thoughtworks.i0.Application;
@@ -15,7 +15,7 @@ import static com.thoughtworks.i0.internal.util.TypePredicates.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class TypePredicates {
+public class TypePredicatesTest {
     @Test
     public void should_return_true_if_sub_class() {
         assertThat(subClassOf(Module.class).apply(ApplicationModule.class), is(true));
@@ -43,7 +43,7 @@ public class TypePredicates {
 
     @Test
     public void should_return_false_if_class_not_abstract() {
-        assertThat(isAbstract.apply(TypePredicates.class), is(false));
+        assertThat(isAbstract.apply(TypePredicatesTest.class), is(false));
     }
 
     @Test

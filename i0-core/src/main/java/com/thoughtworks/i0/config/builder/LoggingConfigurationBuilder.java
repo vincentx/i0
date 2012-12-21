@@ -11,11 +11,16 @@ import java.util.TimeZone;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
-public class LoggingConfigurationBuilder {
-    public class ConsoleConfigurationBuilder implements ConfigurationBuilder<LoggingConfiguration.ConsoleConfiguration> {
+public class LoggingConfigurationBuilder implements Builder<LoggingConfiguration> {
+    private ConfigurationBuilder parent;
+
+    public class ConsoleConfigurationBuilder implements Builder<LoggingConfiguration.ConsoleConfiguration> {
         private LogLevel level = LogLevel.ALL;
         private Optional<String> format = absent();
         private TimeZone timeZone = TimeZone.getTimeZone("UTC");
+
+        public ConsoleConfigurationBuilder() {
+        }
 
         public ConsoleConfigurationBuilder level(LogLevel level) {
             this.level = level;
@@ -41,14 +46,14 @@ public class LoggingConfigurationBuilder {
         }
     }
 
-    public class FileConfigurationBuilder implements ConfigurationBuilder<LoggingConfiguration.FileConfiguration> {
+    public class FileConfigurationBuilder implements Builder<LoggingConfiguration.FileConfiguration> {
         private LogLevel level = LogLevel.ALL;
         private Optional<String> format = Optional.absent();
         private TimeZone timeZone = TimeZone.getTimeZone("UTC");
         private String filename;
 
-        private OptionalConfigurationBuilder<ArchiveConfigurationBuilder, LoggingConfiguration.FileConfiguration.ArchiveConfiguration>
-                archive = new OptionalConfigurationBuilder<>(new ArchiveConfigurationBuilder());
+        private OptionalBuilder<ArchiveConfigurationBuilder, LoggingConfiguration.FileConfiguration.ArchiveConfiguration>
+                archive = new OptionalBuilder<>(new ArchiveConfigurationBuilder());
 
         public FileConfigurationBuilder level(LogLevel level) {
             this.level = level;
@@ -82,7 +87,7 @@ public class LoggingConfigurationBuilder {
             return LoggingConfigurationBuilder.this;
         }
 
-        public class ArchiveConfigurationBuilder implements ConfigurationBuilder<LoggingConfiguration.FileConfiguration.ArchiveConfiguration> {
+        public class ArchiveConfigurationBuilder implements Builder<LoggingConfiguration.FileConfiguration.ArchiveConfiguration> {
             private String namePattern;
             private int maxHistory = 5;
             private Size maxFileSize = new Size(100, Size.Unit.MB);
@@ -115,10 +120,14 @@ public class LoggingConfigurationBuilder {
     private LogLevel level = LogLevel.INFO;
     private ImmutableMap.Builder<String, LogLevel> loggers = new ImmutableMap.Builder<>();
 
-    private OptionalConfigurationBuilder<ConsoleConfigurationBuilder, LoggingConfiguration.ConsoleConfiguration> console =
-            new OptionalConfigurationBuilder<>(new ConsoleConfigurationBuilder());
-    private OptionalConfigurationBuilder<FileConfigurationBuilder, LoggingConfiguration.FileConfiguration> file =
-            new OptionalConfigurationBuilder<>(new FileConfigurationBuilder());
+    private OptionalBuilder<ConsoleConfigurationBuilder, LoggingConfiguration.ConsoleConfiguration> console =
+            new OptionalBuilder<>(new ConsoleConfigurationBuilder());
+    private OptionalBuilder<FileConfigurationBuilder, LoggingConfiguration.FileConfiguration> file =
+            new OptionalBuilder<>(new FileConfigurationBuilder());
+
+    public LoggingConfigurationBuilder(ConfigurationBuilder parent) {
+        this.parent = parent;
+    }
 
     public LoggingConfigurationBuilder level(LogLevel level) {
         this.level = level;
@@ -142,6 +151,10 @@ public class LoggingConfigurationBuilder {
 
     public FileConfigurationBuilder file() {
         return file.builder();
+    }
+
+    public ConfigurationBuilder end() {
+        return parent;
     }
 
     public LoggingConfiguration build() {

@@ -8,8 +8,10 @@ import com.thoughtworks.i0.config.util.Size;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Map;
 import java.util.TimeZone;
 
+@XmlType
 public class LoggingConfiguration {
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
@@ -210,12 +212,11 @@ public class LoggingConfiguration {
         }
     }
 
-
     @NotNull
     private LogLevel level = LogLevel.INFO;
 
     @NotNull
-    private ImmutableMap<String, LogLevel> loggers = ImmutableMap.of();
+    private Map<String, LogLevel> loggers = ImmutableMap.of();
 
     @NotNull
     private Optional<ConsoleConfiguration> console = Optional.absent();
@@ -226,7 +227,7 @@ public class LoggingConfiguration {
     private LoggingConfiguration() {
     }
 
-    public LoggingConfiguration(LogLevel level, ImmutableMap<String, LogLevel> loggers, Optional<ConsoleConfiguration> console, Optional<FileConfiguration> file) {
+    public LoggingConfiguration(LogLevel level, Map<String, LogLevel> loggers, Optional<ConsoleConfiguration> console, Optional<FileConfiguration> file) {
         this.level = level;
         this.loggers = loggers;
         this.console = console;
@@ -239,7 +240,7 @@ public class LoggingConfiguration {
     }
 
     @XmlElement
-    public ImmutableMap<String, LogLevel> getLoggers() {
+    public Map<String, LogLevel> getLoggers() {
         return loggers;
     }
 

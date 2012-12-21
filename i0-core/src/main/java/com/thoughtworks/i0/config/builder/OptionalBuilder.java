@@ -5,16 +5,16 @@ import com.google.common.base.Optional;
 
 import javax.annotation.Nullable;
 
-public class OptionalConfigurationBuilder<T extends ConfigurationBuilder<R>, R> implements ConfigurationBuilder<Optional<R>> {
+public class OptionalBuilder<T extends Builder<R>, R> implements Builder<Optional<R>> {
     private final T builder;
     private Optional<T> wrapper = Optional.absent();
 
-    public OptionalConfigurationBuilder(T builder) {
+    public OptionalBuilder(T builder) {
         this.builder = builder;
     }
 
     public T builder() {
-        wrapper = Optional.of(builder);
+        if (!wrapper.isPresent()) wrapper = Optional.of(builder);
         return builder;
     }
 
