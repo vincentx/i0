@@ -2,15 +2,18 @@ package com.thoughtworks.i0.internal.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+import com.sun.jersey.core.spi.scanning.FilesScanner;
 import com.sun.jersey.core.spi.scanning.PackageNamesScanner;
 import com.sun.jersey.core.spi.scanning.Scanner;
 import com.sun.jersey.core.spi.scanning.ScannerListener;
 import com.sun.jersey.spi.scanning.AnnotationScannerListener;
 import org.objectweb.asm.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.security.CodeSource;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,6 +27,11 @@ public class ClassScanner {
 
     public ClassScanner(String... packages) {
         this.scanner = new PackageNamesScanner(packages);
+    }
+
+    public ClassScanner(CodeSource codeSource) {
+        String path = codeSource.getLocation().getPath();
+        this.scanner = path.endsWith(".jar") ? new FilesScanner(new File[]{new File(path)}) : new PackageNamesScanner(new String[]{""});
     }
 
     public Set<Class<?>> findBy(Predicate<Class<?>> predicate) {

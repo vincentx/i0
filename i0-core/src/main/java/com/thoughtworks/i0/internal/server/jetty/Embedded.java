@@ -4,6 +4,7 @@ package com.thoughtworks.i0.internal.server.jetty;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -29,6 +30,7 @@ import static org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS;
 
 public class Embedded {
     private final Server server;
+    private final ImmutableMap.Builder<String, Injector> injectors = ImmutableMap.builder();
 
     public Embedded(HttpConfiguration configuration) {
         server = new Server(threadPool(configuration));
@@ -41,12 +43,19 @@ public class Embedded {
         handler.addFilter(GuiceFilter.class, "/*", EnumSet.of(REQUEST));
         handler.addServlet(DefaultServlet.class, "/*");
 
+        final Injector injector = Guice.createInjector(modules);
+        injectors.put(name, injector);
+
         handler.addEventListener(new GuiceServletContextListener() {
             @Override
             protected Injector getInjector() {
-                return Guice.createInjector(modules);
+                return injector;
             }
         });
+    }
+
+    public Injector context(String name) {
+        return injectors.build().get(name);
     }
 
     private String root(String name) {

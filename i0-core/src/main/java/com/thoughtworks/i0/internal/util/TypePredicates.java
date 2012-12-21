@@ -77,4 +77,7 @@ public class TypePredicates {
     public static final Predicate<Class<?>> isModule = and(subClassOf(Module.class), not(subClassOf(ApplicationModule.class)),
             not(isAbstract), defaultConstructor);
 
+    public static final Predicate<Class<?>> isApplicationModule =
+            and(not(isAbstract), subClassOf(ApplicationModule.class), defaultConstructor);
+
 }
