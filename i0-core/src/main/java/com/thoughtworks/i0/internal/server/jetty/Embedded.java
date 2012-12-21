@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.server.jetty;
+package com.thoughtworks.i0.internal.server.jetty;
 
 
 import com.google.common.base.Function;
@@ -127,4 +127,7 @@ public class Embedded {
         }
     };
 
+    public boolean isRunning() {
+        return server.isRunning();
+    }
 }

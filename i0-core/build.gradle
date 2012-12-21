@@ -36,6 +36,9 @@ dependencies {
     compile "com.google.inject.extensions:guice-servlet:$guiceVersion"
     compile "com.google.inject.extensions:guice-persist:$guiceVersion"
 
+    compile "com.sun.jersey:jersey-core:$jerseyVersion"
+    compile "com.sun.jersey:jersey-server:$jerseyVersion"
+    compile "com.sun.jersey:jersey-servlet:$jerseyVersion"
     compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
 
     compile "com.googlecode.flyway:flyway-core:$flywayVersion"

@@ -1,10 +1,10 @@
-package com.thoughtworks.i0.server.jetty;
+package com.thoughtworks.i0.internal.server.jetty;
 
 import com.google.inject.servlet.ServletModule;
 import com.thoughtworks.i0.config.HttpConfiguration;
 import com.thoughtworks.i0.config.builder.HttpConfigurationBuilder;
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
+import com.thoughtworks.i0.internal.server.jetty.Embedded;
+import com.thoughtworks.i0.test.helpers.HttpClientHelper;
 import org.junit.After;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class EmbeddedTest {
     @Test
     public void should_configure_server_as_http_service() throws Exception {
         startServer(new HttpConfigurationBuilder().port(8080).build());
-        assertThat(get("http://localhost:8080/message"), is("message"));
+        assertThat(HttpClientHelper.get("http://localhost:8080/message"), is("message"));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class EmbeddedTest {
                     .keyStore(getClass().getResource("test.keystore").getPath(), "password")
                     .trustStore(getClass().getResource("test.keystore").getPath(), "password")
                 .end().build());
-        assertThat(get("https://localhost:8080/message"), is("message"));
+        assertThat(HttpClientHelper.get("https://localhost:8080/message"), is("message"));
     }
 
     private void startServer(HttpConfiguration configuration) throws Exception {
@@ -58,16 +58,4 @@ public class EmbeddedTest {
         });
         server.start(false);
     }
-
-
-    private String get(String url) throws Exception {
-        HttpClient client = new HttpClient(new SslContextFactory());
-        client.start();
-        try {
-            return new String(client.GET(url).get().getContent());
-        } finally {
-            client.stop();
-        }
-    }
-
 }

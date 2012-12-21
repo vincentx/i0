@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.logging;
+package com.thoughtworks.i0.internal.logging;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;

@@ -8,15 +8,7 @@ import java.lang.annotation.*;
 public @interface Application {
     String name();
 
-    String persistUnit() default "";
+    boolean autoScanning() default true;
 
-    String root() default "";
-
-    String[] api() default {};
-
-    String[] servlets() default {};
-
-    String[] filters() default {};
-
-    String[] services() default {};
+    String api() default "/api/*";
 }
