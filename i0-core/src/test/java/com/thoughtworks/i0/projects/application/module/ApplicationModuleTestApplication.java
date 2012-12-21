@@ -14,7 +14,7 @@ import static com.thoughtworks.i0.config.builder.DatabaseConfigurationBuilder.Hi
 @PersistUnit("domain")
 public class ApplicationModuleTestApplication extends ApplicationModule {
     @Override
-    protected Configuration getDefaultConfiguration(ConfigurationBuilder config) {
+    protected Configuration createDefaultConfiguration(ConfigurationBuilder config) {
         return config
                 .logging()
                 .level(LogLevel.INFO)
@@ -22,8 +22,8 @@ public class ApplicationModuleTestApplication extends ApplicationModule {
                 .end()
                 .http()
                 .end()
-                .database().with(H2.driver, H2.privateMemoryDB, H2.compatible("ORACLE"),
-                        Hibernate.dialect("Oracle"), Hibernate.createDrop).user("sa").password("")
+                .database().with(H2.driver, H2.tempFileDB, H2.compatible("ORACLE"),
+                        Hibernate.dialect("Oracle10g"), Hibernate.showSql).user("sa").password("")
                 .end().build();
     }
 }

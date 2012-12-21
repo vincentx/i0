@@ -1,12 +1,15 @@
 package com.thoughtworks.i0.config.builder;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.thoughtworks.i0.config.DatabaseConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.google.common.base.Throwables.propagate;
+import static com.google.common.collect.Iterables.toArray;
+import static com.thoughtworks.i0.config.DatabaseConfiguration.MigrationConfiguration;
 
 public class DatabaseConfigurationBuilder implements Builder<DatabaseConfiguration> {
     private String driver;
@@ -16,6 +19,8 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
     private String user;
     private ImmutableMap.Builder<String, String> properties = ImmutableMap.builder();
     private ConfigurationBuilder parent;
+    private OptionalBuilder<MigrationConfigurationBuilder, DatabaseConfiguration.MigrationConfiguration>
+            migration = new OptionalBuilder<>(new MigrationConfigurationBuilder());
 
     public DatabaseConfigurationBuilder(ConfigurationBuilder parent) {
         this.parent = parent;
@@ -53,6 +58,10 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
         return this;
     }
 
+    public MigrationConfigurationBuilder migration() {
+        return migration.builder();
+    }
+
     public static abstract class Setting {
         public static Setting and(final Setting... settings) {
             return new Setting() {
@@ -73,11 +82,11 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
                 config.driver("org.h2.Driver");
             }
         };
-        public static final Setting tempFile = new Setting() {
+        public static final Setting tempFileDB = new Setting() {
             @Override
             public void set(DatabaseConfigurationBuilder config) {
                 try {
-                    config.url("jdbc:driver:" + File.createTempFile("i0-db-driver", ".db").getAbsolutePath());
+                    config.url("jdbc:h2:" + File.createTempFile("i0-db-driver", ".db").getAbsolutePath());
                 } catch (IOException e) {
                     propagate(e);
                 }
@@ -118,6 +127,13 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
                 config.property("hibernate.hbm2ddl.auto", "create-drop");
             }
         };
+
+        public static Setting showSql = new Setting() {
+            @Override
+            public void set(DatabaseConfigurationBuilder config) {
+                config.property("hibernate.show_sql", "true");
+            }
+        };
     }
 
     public ConfigurationBuilder end() {
@@ -125,6 +141,35 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
     }
 
     public DatabaseConfiguration build() {
-        return new DatabaseConfiguration(driver, url, password, user, properties.build());
+        return new DatabaseConfiguration(driver, url, password, user, properties.build(), migration.build());
+    }
+
+    public class MigrationConfigurationBuilder implements Builder<DatabaseConfiguration.MigrationConfiguration> {
+        private boolean auto = true;
+        private ImmutableSet.Builder<String> locations = ImmutableSet.builder();
+        private ImmutableMap.Builder<String, String> placeholders = ImmutableMap.builder();
+
+        public MigrationConfigurationBuilder auto(boolean auto) {
+            this.auto = auto;
+            return this;
+        }
+
+        public MigrationConfigurationBuilder locations(String... locations) {
+            this.locations.add(locations);
+            return this;
+        }
+
+        public MigrationConfigurationBuilder placeholder(String placeholder, String value) {
+            placeholders.put(placeholder, value);
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder end() {
+            return DatabaseConfigurationBuilder.this;
+        }
+
+        public MigrationConfiguration build() {
+            return new MigrationConfiguration(auto, toArray(locations.build(), String.class), placeholders.build());
+        }
     }
 }

@@ -88,7 +88,13 @@ public class ConfigurationTest {
                 .build()));
 
         assertThat(configuration.getDatabase().get(), is(config().database().with(H2.driver, H2.compatible("ORACLE"),
-                H2.privateMemoryDB, Hibernate.dialect("Oracle")).user("sa").password("").build()));
+                H2.privateMemoryDB, Hibernate.dialect("Oracle")).user("sa").password("")
+                .migration()
+                .auto(false)
+                .locations("db/migration")
+                .placeholder("user", "real_user")
+                .end()
+                .build()));
     }
 
     private InputStream fixture(String fixture) {

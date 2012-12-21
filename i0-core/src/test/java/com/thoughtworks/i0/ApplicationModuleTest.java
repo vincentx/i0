@@ -1,7 +1,9 @@
 package com.thoughtworks.i0;
 
+import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.internal.logging.Logging;
+import com.thoughtworks.i0.internal.migration.Migration;
 import com.thoughtworks.i0.internal.server.jetty.Embedded;
 import com.thoughtworks.i0.projects.application.module.ApplicationModuleTestApplication;
 import org.junit.After;
@@ -19,8 +21,10 @@ public class ApplicationModuleTest {
     @Before
     public void before() throws Exception {
         ApplicationModuleTestApplication module = new ApplicationModuleTestApplication();
-        Logging.configure(module.getConfiguration().getLogging());
-        server = new Embedded(module.getConfiguration().getHttp());
+        Configuration configuration = module.getConfiguration();
+        Logging.configure(configuration.getLogging());
+        Migration.migrate(configuration.getDatabase().get());
+        server = new Embedded(configuration.getHttp());
         server.addServletContext(module.name(), true, module);
         server.start(false);
     }

@@ -76,10 +76,11 @@ public class ApplicationModule extends AbstractModule {
     }
 
     protected final Configuration getConfiguration() {
-        return configuration.or(getDefaultConfiguration(config()));
+        if (!configuration.isPresent()) configuration = of(createDefaultConfiguration(config()));
+        return configuration.get();
     }
 
-    protected Configuration getDefaultConfiguration(ConfigurationBuilder config) {
+    protected Configuration createDefaultConfiguration(ConfigurationBuilder config) {
         return config.http().port(8080).end().build();
     }
 

@@ -35,9 +35,14 @@ logging:
       max_file_size: 150M
       max_history: 10
 database:
-  driver: org.driver.Driver
+  driver: org.h2.Driver
   url: jdbc:h2:mem
   user: sa
   password:
   properties:
     hibernate.dialect: org.hibernate.dialect.OracleDialect
+  migration:
+    auto: false
+    locations: ["db/migration"]
+    placeholders:
+      user: real_user
