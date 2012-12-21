@@ -2,12 +2,12 @@
 <metadata>
   <groupId>com.thoughtworks.i0</groupId>
   <artifactId>i0-core</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0-SNAPSHOT</version>
   <versioning>
-    <versions>
-      <version>0.1.0</version>
-      <version>0.2.0-SNAPSHOT</version>
-    </versions>
+    <snapshot>
+      <timestamp>20121221.164248</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
     <lastUpdated>20121221164248</lastUpdated>
   </versioning>
 </metadata>
