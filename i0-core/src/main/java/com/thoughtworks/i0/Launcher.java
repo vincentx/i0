@@ -2,12 +2,11 @@ package com.thoughtworks.i0;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.i0.config.Configuration;
+import com.thoughtworks.i0.facet.FacetEnabler;
 import com.thoughtworks.i0.internal.logging.Logging;
-import com.thoughtworks.i0.internal.migration.Migration;
 import com.thoughtworks.i0.internal.server.jetty.Embedded;
 import com.thoughtworks.i0.internal.util.ClassScanner;
 import org.slf4j.Logger;
@@ -17,60 +16,49 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Joiner.on;
-import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.collect.ImmutableSet.copyOf;
-import static com.google.common.collect.Iterables.toArray;
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.*;
 import static com.thoughtworks.i0.internal.util.TypePredicates.isApplicationModule;
 
 public class Launcher {
     private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
     private final Map<String, ApplicationModule> modules;
-    private final Optional<Configuration> configuration;
+    private Function<String, ApplicationModule> lookupModule = new Function<String, ApplicationModule>() {
+        @Nullable
+        @Override
+        public ApplicationModule apply(@Nullable String input) {
+            checkArgument(modules.containsKey(input), "Module " + input + " not found");
+            return modules.get(input);
+        }
+    };
 
     public Launcher(Map<String, ApplicationModule> modules, Optional<Configuration> configuration) {
         this.modules = modules;
-        this.configuration = configuration;
         if (configuration.isPresent())
             for (ApplicationModule module : modules.values()) module.setConfiguration(configuration.get());
     }
 
-    public Embedded launch(boolean standalone, final String... moduleNames) throws Exception {
-        String[] launchSet = toArray(moduleNames.length == 0 ? modules.keySet() : copyOf(moduleNames), String.class);
-        if (!configuration.isPresent() && launchSet.length == 1)
-            return launchWithDefaultConfiguration(standalone, launchSet[0]);
-        return createServer(configuration.get(), launchSet, standalone);
-    }
-
-    private Embedded launchWithDefaultConfiguration(boolean standalone, String name) throws Exception {
-        Preconditions.checkArgument(modules.containsKey(name), "Module " + name + " not found");
-        return createServer(modules.get(name).getConfiguration(), new String[]{name}, standalone);
-    }
-
-    private Embedded createServer(Configuration configuration, String[] moduleNames, boolean standalone) throws Exception {
-        Logging.configure(configuration.getLogging());
-        if (configuration.getDatabase().isPresent()) Migration.migrate(configuration.getDatabase().get());
-        Embedded server = new Embedded(configuration.getHttp());
-
-        for (String name : moduleNames) {
-            Preconditions.checkArgument(modules.containsKey(name), "Module " + name + " not found");
-            server.addServletContext(name, true, modules.get(name));
-        }
-        server.start(standalone);
-        return server;
+    public Embedded launch(Optional<String> name, boolean standalone) throws Exception {
+        return launch(name.transform(lookupModule).or(getDefaultModule()), standalone);
     }
 
     public static Embedded launch(ApplicationModule module, boolean standalone) throws Exception {
-        return launch(module, null, standalone);
-    }
+        Configuration configuration = module.getConfiguration();
+        Logging.configure(configuration.getLogging());
 
-    public static Embedded launch(ApplicationModule module, Configuration configuration, boolean standalone) throws Exception {
-        return new Launcher(modules(module), fromNullable(configuration)).launch(standalone);
+        for(Map.Entry<Annotation, FacetEnabler> enabler : module.getEnablers().entrySet())
+            enabler.getValue().performPreLaunchTasks(enabler.getKey(), configuration);
+
+        Embedded server = new Embedded(configuration.getHttp());
+        server.addServletContext(module.name(), true, module);
+        server.start(standalone);
+        return server;
     }
 
     private static Map<String, ApplicationModule> modules(ApplicationModule... modules) {
@@ -117,8 +105,14 @@ public class Launcher {
         }
     };
 
-    public static void main(String... arguments) throws Exception {
-        new Launcher(scanApplicationModules(), readConfiguration()).launch(true, arguments);
+    private ApplicationModule getDefaultModule() {
+        checkArgument(modules.size() == 1, "Can not decide which module to launch.");
+        return getFirst(modules.values(), null);
     }
 
+    public static void main(String... arguments) throws Exception {
+        checkArgument(arguments.length <= 1, "Too many arguments");
+        Optional<String> module = arguments.length == 0 ? Optional.<String>absent() : Optional.of(arguments[1]);
+        new Launcher(scanApplicationModules(), readConfiguration()).launch(module, true);
+    }
 }

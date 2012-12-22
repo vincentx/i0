@@ -2,19 +2,18 @@ package com.thoughtworks.i0;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
-import com.google.inject.persist.PersistFilter;
-import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
+import com.thoughtworks.i0.facet.Facet;
+import com.thoughtworks.i0.facet.FacetEnabler;
 import com.thoughtworks.i0.internal.util.ClassScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
@@ -31,8 +31,8 @@ import java.util.Set;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.toArray;
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.ImmutableSet.copyOf;
+import static com.google.common.collect.Iterables.*;
 import static com.sun.jersey.api.core.PackagesResourceConfig.PROPERTY_PACKAGES;
 import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
 import static com.thoughtworks.i0.internal.util.ServletAnnotations.LOG_FORMATTER;
@@ -46,9 +46,22 @@ public class ApplicationModule extends AbstractModule {
 
     private Optional<Configuration> configuration = Optional.absent();
 
+    private final Map<Annotation, FacetEnabler> enablers;
+
     public ApplicationModule() {
         checkState(getClass().isAnnotationPresent(Application.class), "missing @Application annotation for application module '" + getClass().getName() + "'");
         this.application = getClass().getAnnotation(Application.class);
+        ImmutableMap.Builder<Annotation, FacetEnabler> enablerBuilder = ImmutableMap.builder();
+        for (Annotation annotation : filter(copyOf(getClass().getAnnotations()), isFacet)) {
+            Facet facet = annotation.annotationType().getAnnotation(Facet.class);
+            Class<? extends FacetEnabler> enablerClass = facet.value();
+            try {
+                enablerBuilder.put(annotation, enablerClass.getConstructor().newInstance());
+            } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new IllegalArgumentException("Can not create enabler for facet: " + facet.annotationType().getName());
+            }
+        }
+        enablers = enablerBuilder.build();
     }
 
     @Override
@@ -59,16 +72,8 @@ public class ApplicationModule extends AbstractModule {
             scanResources(application.api(), currentPackage);
         }
 
-        if (getClass().isAnnotationPresent(PersistUnit.class)) {
-            Preconditions.checkArgument(getConfiguration().getDatabase().isPresent(), "No database configuration found");
-            install(new JpaPersistModule(getClass().getAnnotation(PersistUnit.class).value()).properties(getConfiguration().getDatabase().get().toProperties()));
-            install(new ServletModule() {
-                @Override
-                protected void configureServlets() {
-                    filter("/*").through(PersistFilter.class);
-                }
-            });
-        }
+        for(Map.Entry<Annotation, FacetEnabler> enabler : enablers.entrySet())
+            enabler.getValue().createBindings(binder(), enabler.getKey(), getConfiguration());
     }
 
     void setConfiguration(Configuration configuration) {
@@ -101,6 +106,10 @@ public class ApplicationModule extends AbstractModule {
 
     public String name() {
         return application.name().startsWith("/") ? application.name() : "/" + application.name();
+    }
+
+    public Map<Annotation, FacetEnabler> getEnablers() {
+        return enablers;
     }
 
     private class AutoScanningServletModule extends ServletModule {

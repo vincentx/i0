@@ -3,6 +3,7 @@ package com.thoughtworks.i0.internal.util;
 import com.google.common.base.Predicate;
 import com.google.inject.Module;
 import com.thoughtworks.i0.ApplicationModule;
+import com.thoughtworks.i0.facet.Facet;
 
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
@@ -80,4 +81,10 @@ public class TypePredicates {
     public static final Predicate<Class<?>> isApplicationModule =
             and(not(isAbstract), subClassOf(ApplicationModule.class), defaultConstructor);
 
+    public static final Predicate<Annotation> isFacet = new Predicate<Annotation>() {
+        @Override
+        public boolean apply(@Nullable Annotation input) {
+            return input.annotationType().isAnnotationPresent(Facet.class);
+        }
+    };
 }

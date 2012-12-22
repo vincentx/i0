@@ -2,7 +2,7 @@ package com.thoughtworks.i0.projects.application.module;
 
 import com.thoughtworks.i0.Application;
 import com.thoughtworks.i0.ApplicationModule;
-import com.thoughtworks.i0.PersistUnit;
+import com.thoughtworks.i0.persist.PersistUnit;
 import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.config.util.LogLevel;
