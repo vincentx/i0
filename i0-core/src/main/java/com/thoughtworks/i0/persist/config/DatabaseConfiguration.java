@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.config;
+package com.thoughtworks.i0.persist.config;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -14,6 +14,10 @@ import static com.google.common.base.Optional.absent;
 
 @XmlType
 public class DatabaseConfiguration {
+    public static DatabaseConfigurationBuilder database() {
+        return new DatabaseConfigurationBuilder();
+    }
+
     @NotNull
     private String driver;
     @NotNull
@@ -29,7 +33,7 @@ public class DatabaseConfiguration {
     private DatabaseConfiguration() {
     }
 
-    public DatabaseConfiguration(String driver, String url, String password, String user, Map<String, String> properties, Optional<MigrationConfiguration> migration) {
+    DatabaseConfiguration(String driver, String url, String password, String user, Map<String, String> properties, Optional<MigrationConfiguration> migration) {
         this.driver = driver;
         this.url = url;
         this.password = password;

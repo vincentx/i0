@@ -2,6 +2,7 @@ package com.thoughtworks.i0.internal.util;
 
 import com.google.common.base.Predicate;
 import com.google.inject.Module;
+import com.thoughtworks.i0.Application;
 import com.thoughtworks.i0.ApplicationModule;
 import com.thoughtworks.i0.facet.Facet;
 
@@ -12,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 
 import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.not;
@@ -27,6 +29,15 @@ public class TypePredicates {
             @Override
             public boolean apply(@Nullable Class<?> input) {
                 return aClass.isAssignableFrom(input);
+            }
+        };
+    }
+
+    public static Predicate<Type> typeSubClassOf(final Class<?> aClass) {
+        return new Predicate<Type>() {
+            @Override
+            public boolean apply(@Nullable Type input) {
+                return (input instanceof Class<?>) ? aClass.isAssignableFrom((Class<?>) input) : false;
             }
         };
     }
@@ -80,6 +91,15 @@ public class TypePredicates {
 
     public static final Predicate<Class<?>> isApplicationModule =
             and(not(isAbstract), subClassOf(ApplicationModule.class), defaultConstructor);
+
+    public static final Predicate<Class<?>> moduleName(final String name) {
+        return new Predicate<Class<?>>() {
+            @Override
+            public boolean apply(@Nullable Class<?> input) {
+                return name.equals(input.getAnnotation(Application.class).name());
+            }
+        };
+    }
 
     public static final Predicate<Annotation> isFacet = new Predicate<Annotation>() {
         @Override

@@ -2,6 +2,7 @@ package com.thoughtworks.i0;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -11,7 +12,6 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.thoughtworks.i0.config.Configuration;
-import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.facet.Facet;
 import com.thoughtworks.i0.facet.FacetEnabler;
 import com.thoughtworks.i0.internal.util.ClassScanner;
@@ -25,32 +25,39 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Joiner.on;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Iterables.*;
 import static com.sun.jersey.api.core.PackagesResourceConfig.PROPERTY_PACKAGES;
-import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
+import static com.thoughtworks.i0.config.Configuration.config;
 import static com.thoughtworks.i0.internal.util.ServletAnnotations.LOG_FORMATTER;
 import static com.thoughtworks.i0.internal.util.ServletAnnotations.urlPatterns;
 import static com.thoughtworks.i0.internal.util.TypePredicates.*;
 
-public class ApplicationModule extends AbstractModule {
+public class ApplicationModule<T extends Configuration> extends AbstractModule {
     private final Application application;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Optional<Configuration> configuration = Optional.absent();
+    private Optional<T> configuration = Optional.absent();
 
     private final Map<Annotation, FacetEnabler> enablers;
 
     public ApplicationModule() {
         checkState(getClass().isAnnotationPresent(Application.class), "missing @Application annotation for application module '" + getClass().getName() + "'");
         this.application = getClass().getAnnotation(Application.class);
+        this.enablers = findEnablers();
+    }
+
+    private ImmutableMap<Annotation, FacetEnabler> findEnablers() {
         ImmutableMap.Builder<Annotation, FacetEnabler> enablerBuilder = ImmutableMap.builder();
         for (Annotation annotation : filter(copyOf(getClass().getAnnotations()), isFacet)) {
             Facet facet = annotation.annotationType().getAnnotation(Facet.class);
@@ -61,7 +68,22 @@ public class ApplicationModule extends AbstractModule {
                 throw new IllegalArgumentException("Can not create enabler for facet: " + facet.annotationType().getName());
             }
         }
-        enablers = enablerBuilder.build();
+        return enablerBuilder.build();
+    }
+
+    final Class<T> getConfigurationType() {
+        return (Class<T>) find(typeParametersOf(genericSuperClass()), typeSubClassOf(Configuration.class));
+    }
+
+    private Type genericSuperClass() {
+        Type t = getClass();
+        while (t instanceof Class<?>) t = ((Class<?>) t).getGenericSuperclass();
+        return t;
+    }
+
+    private ImmutableSet<Type> typeParametersOf(Type t) {
+        return t instanceof ParameterizedType ? copyOf(((ParameterizedType) t).getActualTypeArguments()) :
+                ImmutableSet.<Type>of();
     }
 
     @Override
@@ -72,21 +94,22 @@ public class ApplicationModule extends AbstractModule {
             scanResources(application.api(), currentPackage);
         }
 
-        for(Map.Entry<Annotation, FacetEnabler> enabler : enablers.entrySet())
+        for (Map.Entry<Annotation, FacetEnabler> enabler : enablers.entrySet())
             enabler.getValue().createBindings(binder(), enabler.getKey(), getConfiguration());
     }
 
     void setConfiguration(Configuration configuration) {
-        this.configuration = of(configuration);
+        this.configuration = of((T) configuration);
     }
 
-    protected final Configuration getConfiguration() {
-        if (!configuration.isPresent()) configuration = of(createDefaultConfiguration(config()));
+    protected final T getConfiguration() {
+        if (!configuration.isPresent()) configuration = fromNullable(createDefaultConfiguration(config()));
+        Preconditions.checkArgument(configuration.isPresent(), "No configuration for module: " + getClass());
         return configuration.get();
     }
 
-    protected Configuration createDefaultConfiguration(ConfigurationBuilder config) {
-        return config.http().port(8080).end().build();
+    protected T createDefaultConfiguration(Configuration.ConfigurationBuilder config) {
+        return null;
     }
 
     protected void scan(String... packages) {

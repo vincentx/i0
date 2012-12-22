@@ -2,6 +2,8 @@ package com.thoughtworks.i0.config;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.thoughtworks.i0.config.builder.Builder;
+import com.thoughtworks.i0.config.builder.OptionalBuilder;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.config.util.Size;
 
@@ -10,6 +12,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Map;
 import java.util.TimeZone;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 @XmlType
 public class LoggingConfiguration {
@@ -29,7 +34,7 @@ public class LoggingConfiguration {
         private ConsoleConfiguration() {
         }
 
-        public ConsoleConfiguration(LogLevel level, Optional<String> format, TimeZone timeZone) {
+        private ConsoleConfiguration(LogLevel level, Optional<String> format, TimeZone timeZone) {
             this.level = level;
             this.format = format;
             this.timeZone = timeZone;
@@ -89,7 +94,7 @@ public class LoggingConfiguration {
             private ArchiveConfiguration() {
             }
 
-            public ArchiveConfiguration(String namePattern, int maxHistory, Size maxFileSize) {
+            private ArchiveConfiguration(String namePattern, int maxHistory, Size maxFileSize) {
                 this.namePattern = namePattern;
                 this.maxHistory = maxHistory;
                 this.maxFileSize = maxFileSize;
@@ -152,7 +157,7 @@ public class LoggingConfiguration {
         private FileConfiguration() {
         }
 
-        public FileConfiguration(LogLevel level, Optional<String> format, TimeZone timeZone, String filename, Optional<ArchiveConfiguration> archive) {
+        private FileConfiguration(LogLevel level, Optional<String> format, TimeZone timeZone, String filename, Optional<ArchiveConfiguration> archive) {
             this.level = level;
             this.format = format;
             this.timeZone = timeZone;
@@ -227,7 +232,7 @@ public class LoggingConfiguration {
     private LoggingConfiguration() {
     }
 
-    public LoggingConfiguration(LogLevel level, Map<String, LogLevel> loggers, Optional<ConsoleConfiguration> console, Optional<FileConfiguration> file) {
+    private LoggingConfiguration(LogLevel level, Map<String, LogLevel> loggers, Optional<ConsoleConfiguration> console, Optional<FileConfiguration> file) {
         this.level = level;
         this.loggers = loggers;
         this.console = console;
@@ -276,5 +281,156 @@ public class LoggingConfiguration {
         result = 31 * result + console.hashCode();
         result = 31 * result + file.hashCode();
         return result;
+    }
+
+    public static class LoggingConfigurationBuilder implements Builder<LoggingConfiguration> {
+        private Configuration.ConfigurationBuilder parent;
+
+        public class ConsoleConfigurationBuilder implements Builder<ConsoleConfiguration> {
+            private LogLevel level = LogLevel.ALL;
+            private Optional<String> format = absent();
+            private TimeZone timeZone = TimeZone.getTimeZone("UTC");
+
+            public ConsoleConfigurationBuilder() {
+            }
+
+            public ConsoleConfigurationBuilder level(LogLevel level) {
+                this.level = level;
+                return this;
+            }
+
+            public ConsoleConfigurationBuilder format(String format) {
+                this.format = of(format);
+                return this;
+            }
+
+            public ConsoleConfigurationBuilder timeZone(String timeZone) {
+                this.timeZone = TimeZone.getTimeZone(timeZone);
+                return this;
+            }
+
+            public ConsoleConfiguration build() {
+                return new ConsoleConfiguration(level, format, timeZone);
+            }
+
+            public LoggingConfigurationBuilder end() {
+                return LoggingConfigurationBuilder.this;
+            }
+        }
+
+        public class FileConfigurationBuilder implements Builder<FileConfiguration> {
+            private LogLevel level = LogLevel.ALL;
+            private Optional<String> format = Optional.absent();
+            private TimeZone timeZone = TimeZone.getTimeZone("UTC");
+            private String filename;
+
+            private OptionalBuilder<ArchiveConfigurationBuilder, FileConfiguration.ArchiveConfiguration>
+                    archive = new OptionalBuilder<>(new ArchiveConfigurationBuilder());
+
+            public FileConfigurationBuilder level(LogLevel level) {
+                this.level = level;
+                return this;
+            }
+
+            public FileConfigurationBuilder format(String format) {
+                this.format = of(format);
+                return this;
+            }
+
+            public FileConfigurationBuilder timeZone(String timeZone) {
+                this.timeZone = TimeZone.getTimeZone(timeZone);
+                return this;
+            }
+
+            public FileConfigurationBuilder filename(String filename) {
+                this.filename = filename;
+                return this;
+            }
+
+            public ArchiveConfigurationBuilder archive() {
+                return this.archive.builder();
+            }
+
+            public FileConfiguration build() {
+                return new FileConfiguration(level, format, timeZone, filename, archive.build());
+            }
+
+            public LoggingConfigurationBuilder end() {
+                return LoggingConfigurationBuilder.this;
+            }
+
+            public class ArchiveConfigurationBuilder implements Builder<FileConfiguration.ArchiveConfiguration> {
+                private String namePattern;
+                private int maxHistory = 5;
+                private Size maxFileSize = new Size(100, Size.Unit.MB);
+
+                public ArchiveConfigurationBuilder namePattern(String namePattern) {
+                    this.namePattern = namePattern;
+                    return this;
+                }
+
+                public ArchiveConfigurationBuilder maxHistory(int maxHistory) {
+                    this.maxHistory = maxHistory;
+                    return this;
+                }
+
+                public ArchiveConfigurationBuilder maxFileSize(Size maxFileSize) {
+                    this.maxFileSize = maxFileSize;
+                    return this;
+                }
+
+                public FileConfiguration.ArchiveConfiguration build() {
+                    return new FileConfiguration.ArchiveConfiguration(namePattern, maxHistory, maxFileSize);
+                }
+
+                public FileConfigurationBuilder end() {
+                    return FileConfigurationBuilder.this;
+                }
+            }
+        }
+
+        private LogLevel level = LogLevel.INFO;
+        private ImmutableMap.Builder<String, LogLevel> loggers = new ImmutableMap.Builder<>();
+
+        private OptionalBuilder<ConsoleConfigurationBuilder, ConsoleConfiguration> console =
+                new OptionalBuilder<>(new ConsoleConfigurationBuilder());
+        private OptionalBuilder<FileConfigurationBuilder, FileConfiguration> file =
+                new OptionalBuilder<>(new FileConfigurationBuilder());
+
+        LoggingConfigurationBuilder(Configuration.ConfigurationBuilder parent) {
+            this.parent = parent;
+        }
+
+        public LoggingConfigurationBuilder level(LogLevel level) {
+            this.level = level;
+            return this;
+        }
+
+        public LoggingConfigurationBuilder logger(String className, LogLevel level) {
+            loggers.put(className, level);
+            return this;
+        }
+
+        public LoggingConfigurationBuilder logger(Class<?> aClass, LogLevel level) {
+            loggers.put(aClass.getName(), level);
+            return this;
+        }
+
+
+        public ConsoleConfigurationBuilder console() {
+            return console.builder();
+        }
+
+        public FileConfigurationBuilder file() {
+            return file.builder();
+        }
+
+        public Configuration.ConfigurationBuilder end() {
+            return parent;
+        }
+
+        public LoggingConfiguration build() {
+            return new LoggingConfiguration(level, loggers.build(), console.build(), file.build());
+        }
     }
 }

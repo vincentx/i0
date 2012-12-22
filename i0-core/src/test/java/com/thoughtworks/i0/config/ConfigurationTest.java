@@ -4,18 +4,24 @@ import com.google.common.base.Optional;
 import com.thoughtworks.i0.config.util.Duration;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.config.util.Size;
+import com.thoughtworks.i0.persist.WithDatabase;
+import com.thoughtworks.i0.persist.config.DatabaseConfiguration;
 import org.junit.Test;
 
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.thoughtworks.i0.config.Configuration.config;
 import static com.thoughtworks.i0.config.Configuration.read;
 import static com.thoughtworks.i0.config.HttpConfiguration.*;
-import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
-import static com.thoughtworks.i0.config.builder.DatabaseConfigurationBuilder.H2;
-import static com.thoughtworks.i0.config.builder.DatabaseConfigurationBuilder.Hibernate;
 import static com.thoughtworks.i0.config.util.Duration.Unit.MILLISECONDS;
 import static com.thoughtworks.i0.config.util.Duration.Unit.SECONDS;
+import static com.thoughtworks.i0.persist.config.DatabaseConfiguration.database;
+import static com.thoughtworks.i0.persist.config.DatabaseConfigurationBuilder.H2;
+import static com.thoughtworks.i0.persist.config.DatabaseConfigurationBuilder.Hibernate;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -23,7 +29,7 @@ public class ConfigurationTest {
 
     @Test
     public void should_use_default_value_for_configuration() throws IOException {
-        Configuration configuration = read(fixture("use_default_value_for_configuration.yml"));
+        Configuration configuration = read(fixture("use_default_value_for_configuration.yml"), Configuration.class);
 
         HttpConfiguration http = configuration.getHttp();
         assertThat(http.getPort(), is(DEFAULT_PORT));
@@ -48,7 +54,7 @@ public class ConfigurationTest {
 
     @Test
     public void should_populate_configurations() throws IOException {
-        Configuration configuration = read(fixture("populate_configurations.yml"));
+        Configuration configuration = read(fixture("populate_configurations.yml"), Configuration.class);
 
         assertThat(configuration.getHttp(), is(config().http()
                 .port(8081).host("127.0.0.1")
@@ -87,7 +93,12 @@ public class ConfigurationTest {
                 .end()
                 .build()));
 
-        assertThat(configuration.getDatabase().get(), is(config().database().with(H2.driver, H2.compatible("ORACLE"),
+    }
+
+    @Test
+    public void should_populate_customized_configurations() throws IOException {
+        DbConfiguration configuration = read(fixture("customized_configurations.yml"), DbConfiguration.class);
+        assertThat(configuration.getDatabase(), is(database().with(H2.driver, H2.compatible("ORACLE"),
                 H2.privateMemoryDB, Hibernate.dialect("Oracle")).user("sa").password("")
                 .migration()
                 .auto(false)
@@ -97,7 +108,27 @@ public class ConfigurationTest {
                 .build()));
     }
 
+
     private InputStream fixture(String fixture) {
         return getClass().getResourceAsStream(fixture);
+    }
+
+    @XmlType
+    public static class DbConfiguration extends Configuration implements WithDatabase {
+        @NotNull
+        private DatabaseConfiguration database;
+
+        private DbConfiguration() {
+        }
+
+        public DbConfiguration(Configuration configuration, DatabaseConfiguration database) {
+            super(configuration);
+            this.database = database;
+        }
+
+        @XmlElement
+        public DatabaseConfiguration getDatabase() {
+            return database;
+        }
     }
 }

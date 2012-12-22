@@ -9,8 +9,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-import com.google.common.base.Optional;
-import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
+import com.thoughtworks.i0.config.builder.Builder;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,17 +17,19 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.google.common.base.Optional.absent;
-
 @XmlType
 public class Configuration {
 
-    public static Configuration read(InputStream configStream) throws IOException {
-        return getMapper().readValue(configStream, Configuration.class);
+    public static <T extends Configuration> T read(InputStream configStream, Class<T> configurationType) throws IOException {
+        return getMapper().readValue(configStream, configurationType);
     }
 
     public static String dump(Configuration configuration) throws JsonProcessingException {
         return getMapper().writeValueAsString(configuration);
+    }
+
+    public static ConfigurationBuilder config() {
+        return new ConfigurationBuilder();
     }
 
     private static ObjectMapper getMapper() {
@@ -45,19 +46,19 @@ public class Configuration {
     @NotNull
     private LoggingConfiguration logging;
 
-    @NotNull
-    private Optional<DatabaseConfiguration> database = absent();
-
-    private Configuration() {
-        ConfigurationBuilder config = ConfigurationBuilder.config();
-        http = config.http().build();
-        logging = config.logging().build();
+    protected Configuration() {
+        http = config().http().build();
+        logging = config().logging().build();
     }
 
-    public Configuration(HttpConfiguration http, LoggingConfiguration logging, Optional<DatabaseConfiguration> database) {
+    private Configuration(HttpConfiguration http, LoggingConfiguration logging) {
         this.http = http;
         this.logging = logging;
-        this.database = database;
+    }
+
+    protected Configuration(Configuration configuration) {
+        this.http = configuration.http;
+        this.logging = configuration.logging;
     }
 
     @XmlElement
@@ -70,9 +71,26 @@ public class Configuration {
         return logging;
     }
 
-    @XmlElement
-    public Optional<DatabaseConfiguration> getDatabase() {
-        return database;
-    }
+    public static class ConfigurationBuilder implements Builder<Configuration> {
 
+        private HttpConfiguration.HttpConfigurationBuilder http = new HttpConfiguration.HttpConfigurationBuilder(this);
+
+        private LoggingConfiguration.LoggingConfigurationBuilder logging = new LoggingConfiguration.LoggingConfigurationBuilder(this);
+
+        ConfigurationBuilder() {
+        }
+
+        public HttpConfiguration.HttpConfigurationBuilder http() {
+            return http;
+        }
+
+        public LoggingConfiguration.LoggingConfigurationBuilder logging() {
+            return logging;
+        }
+
+        @Override
+        public Configuration build() {
+            return new Configuration(http.build(), logging.build());
+        }
+    }
 }

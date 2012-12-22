@@ -1,15 +1,16 @@
-package com.thoughtworks.i0.config.builder;
+package com.thoughtworks.i0.persist.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.thoughtworks.i0.config.DatabaseConfiguration;
+import com.thoughtworks.i0.config.builder.Builder;
+import com.thoughtworks.i0.config.builder.OptionalBuilder;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.google.common.base.Throwables.propagate;
 import static com.google.common.collect.Iterables.toArray;
-import static com.thoughtworks.i0.config.DatabaseConfiguration.MigrationConfiguration;
+import static com.thoughtworks.i0.persist.config.DatabaseConfiguration.MigrationConfiguration;
 
 public class DatabaseConfigurationBuilder implements Builder<DatabaseConfiguration> {
     private String driver;
@@ -18,12 +19,10 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
     private String password;
     private String user;
     private ImmutableMap.Builder<String, String> properties = ImmutableMap.builder();
-    private ConfigurationBuilder parent;
-    private OptionalBuilder<MigrationConfigurationBuilder, DatabaseConfiguration.MigrationConfiguration>
+    private OptionalBuilder<MigrationConfigurationBuilder, MigrationConfiguration>
             migration = new OptionalBuilder<>(new MigrationConfigurationBuilder());
 
-    public DatabaseConfigurationBuilder(ConfigurationBuilder parent) {
-        this.parent = parent;
+    DatabaseConfigurationBuilder() {
     }
 
     public DatabaseConfigurationBuilder driver(String driver) {
@@ -134,10 +133,6 @@ public class DatabaseConfigurationBuilder implements Builder<DatabaseConfigurati
                 config.property("hibernate.show_sql", "true");
             }
         };
-    }
-
-    public ConfigurationBuilder end() {
-        return parent;
     }
 
     public DatabaseConfiguration build() {

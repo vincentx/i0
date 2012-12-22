@@ -2,8 +2,8 @@ package com.thoughtworks.i0;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.facet.FacetEnabler;
 import com.thoughtworks.i0.internal.logging.Logging;
@@ -21,38 +21,36 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.collect.ImmutableList.of;
+import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Iterables.*;
+import static com.thoughtworks.i0.config.Configuration.read;
 import static com.thoughtworks.i0.internal.util.TypePredicates.isApplicationModule;
+import static com.thoughtworks.i0.internal.util.TypePredicates.moduleName;
 
 public class Launcher {
     private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
-    private final Map<String, ApplicationModule> modules;
-    private Function<String, ApplicationModule> lookupModule = new Function<String, ApplicationModule>() {
+    private static final Function<String, File> TO_CONFIG_FILE = new Function<String, File>() {
         @Nullable
         @Override
-        public ApplicationModule apply(@Nullable String input) {
-            checkArgument(modules.containsKey(input), "Module " + input + " not found");
-            return modules.get(input);
+        public File apply(@Nullable String input) {
+            return new File("./" + input + ".yml");
+        }
+    };
+    public static final Predicate<File> EXISTS = new Predicate<File>() {
+        @Override
+        public boolean apply(@Nullable File input) {
+            return input.exists();
         }
     };
 
-    public Launcher(Map<String, ApplicationModule> modules, Optional<Configuration> configuration) {
-        this.modules = modules;
-        if (configuration.isPresent())
-            for (ApplicationModule module : modules.values()) module.setConfiguration(configuration.get());
-    }
-
-    public Embedded launch(Optional<String> name, boolean standalone) throws Exception {
-        return launch(name.transform(lookupModule).or(getDefaultModule()), standalone);
-    }
-
-    public static Embedded launch(ApplicationModule module, boolean standalone) throws Exception {
+    public static Embedded launch(ApplicationModule<? extends Configuration> module, boolean standalone) throws Exception {
         Configuration configuration = module.getConfiguration();
         Logging.configure(configuration.getLogging());
 
-        for(Map.Entry<Annotation, FacetEnabler> enabler : module.getEnablers().entrySet())
+        for (Map.Entry<Annotation, FacetEnabler> enabler : module.getEnablers().entrySet())
             enabler.getValue().performPreLaunchTasks(enabler.getKey(), configuration);
 
         Embedded server = new Embedded(configuration.getHttp());
@@ -61,58 +59,46 @@ public class Launcher {
         return server;
     }
 
-    private static Map<String, ApplicationModule> modules(ApplicationModule... modules) {
-        ImmutableMap.Builder<String, ApplicationModule> builder = ImmutableMap.builder();
-        for (ApplicationModule module : modules)
-            builder.put(module.name(), module);
-        return builder.build();
-    }
-
-    private static Optional<Configuration> readConfiguration() throws IOException {
-        File configFile = new File("./config.yml");
-        if (configFile.exists()) {
-            if (logger.isInfoEnabled()) logger.info("Reading configuration from file: " + configFile.getAbsolutePath());
-            return Optional.of(Configuration.read(new FileInputStream(configFile)));
-        }
-        if (logger.isInfoEnabled())
-            logger.info("No configuration found, will use default configuration for each module");
-        return Optional.absent();
-    }
-
-    private static Map<String, ApplicationModule> scanApplicationModules() throws Exception {
+    private static ApplicationModule<? extends Configuration> findApplicationModule(String name) throws Exception {
         ClassScanner scanner = new ClassScanner(Launcher.class.getProtectionDomain().getCodeSource());
-        if (logger.isInfoEnabled()) logger.info("Scanning for application module classes.");
-        Set<Class<?>> found = scanner.findBy(isApplicationModule);
-
-
-        if (logger.isInfoEnabled())
-            logger.info(found.isEmpty() ? "No application module classes found" : ("Application module classes found:\n  {}"),
-                    on("\n  ").join(found));
-
-        return modules(toArray(transform(found, CREATE_INSTANCE), ApplicationModule.class));
+        Set<Class<?>> modules = copyOf(scanner.findBy(and(isApplicationModule, moduleName(name))));
+        checkArgument(modules.size() != 0, "Can not found module named: " + name);
+        checkArgument(modules.size() == 1, "More than 1 module named: " + name);
+        return createApplicationModule(getFirst(modules, null));
     }
 
-    private static final Function<Class<?>, ApplicationModule> CREATE_INSTANCE = new Function<Class<?>, ApplicationModule>() {
-        @Nullable
-        @Override
-        public ApplicationModule apply(@Nullable Class<?> input) {
-            try {
-                return (ApplicationModule) input.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                Throwables.propagate(e);
-            }
-            return null;
-        }
-    };
+    private static ApplicationModule<? extends Configuration> findDefaultApplicationModule() throws Exception {
+        ClassScanner scanner = new ClassScanner(Launcher.class.getProtectionDomain().getCodeSource());
+        Set<Class<?>> modules = copyOf(scanner.findBy(isApplicationModule));
+        checkArgument(modules.size() == 1, "More than 1 module found.");
+        return createApplicationModule(getFirst(modules, null));
+    }
 
-    private ApplicationModule getDefaultModule() {
-        checkArgument(modules.size() == 1, "Can not decide which module to launch.");
-        return getFirst(modules.values(), null);
+    private static ApplicationModule createApplicationModule(Class<?> input) {
+        try {
+            return (ApplicationModule) input.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            Throwables.propagate(e);
+        }
+        return null;
+    }
+
+    private static ApplicationModule<? extends Configuration> readConfiguration(ApplicationModule<? extends Configuration> module) throws IOException {
+        Optional<File> config = tryFind(transform(of(module.name(), "config"), TO_CONFIG_FILE), EXISTS);
+
+        if (config.isPresent()) {
+            if (logger.isInfoEnabled())
+                logger.info("Reading configuration from file: " + config.get().getAbsolutePath());
+            module.setConfiguration(read(new FileInputStream(config.get()), module.getConfigurationType()));
+        } else {
+            if (logger.isInfoEnabled())
+                logger.info("No configuration found, will use default configuration.");
+        }
+        return module;
     }
 
     public static void main(String... arguments) throws Exception {
         checkArgument(arguments.length <= 1, "Too many arguments");
-        Optional<String> module = arguments.length == 0 ? Optional.<String>absent() : Optional.of(arguments[1]);
-        new Launcher(scanApplicationModules(), readConfiguration()).launch(module, true);
+        launch(readConfiguration(arguments.length == 0 ? findDefaultApplicationModule() : findApplicationModule(arguments[0])), true);
     }
 }

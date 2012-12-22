@@ -2,7 +2,6 @@ package com.thoughtworks.i0.internal.server.jetty;
 
 import com.google.inject.servlet.ServletModule;
 import com.thoughtworks.i0.config.HttpConfiguration;
-import com.thoughtworks.i0.config.builder.ConfigurationBuilder;
 import com.thoughtworks.i0.test.helpers.HttpClientHelper;
 import org.junit.After;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.thoughtworks.i0.config.builder.ConfigurationBuilder.config;
+import static com.thoughtworks.i0.config.Configuration.config;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

@@ -5,8 +5,8 @@ import com.thoughtworks.i0.config.Configuration;
 
 import java.lang.annotation.Annotation;
 
-public interface FacetEnabler<AnnotationType extends Annotation> {
-    void createBindings(Binder binder, AnnotationType annotation, Configuration configuration);
+public interface FacetEnabler<AnnotationType extends Annotation, ConfigurationType> {
+      void createBindings(Binder binder, AnnotationType annotation, ConfigurationType configuration);
 
-    void performPreLaunchTasks(AnnotationType annotation, Configuration configuration);
+    void performPreLaunchTasks(AnnotationType annotation, ConfigurationType configuration);
 }
