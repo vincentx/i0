@@ -2,8 +2,8 @@ package com.thoughtworks.i0.core;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.thoughtworks.i0.core.guiceinjection.AutoScan;
-import com.thoughtworks.i0.core.guiceinjection.Specified;
+import com.thoughtworks.i0.core.guicemodule.AutoScan;
+import com.thoughtworks.i0.core.guicemodule.Specified;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

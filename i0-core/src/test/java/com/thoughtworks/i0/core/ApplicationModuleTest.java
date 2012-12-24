@@ -3,7 +3,7 @@ package com.thoughtworks.i0.core;
 import com.google.inject.Binder;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.thoughtworks.i0.config.Configuration;
-import com.thoughtworks.i0.core.internal.GuiceInjectionEnabler;
+import com.thoughtworks.i0.core.internal.GuiceModuleEnabler;
 import com.thoughtworks.i0.core.internal.servlet.Servlet3Enabler;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,9 +49,9 @@ public class ApplicationModuleTest {
         Map<Annotation, FacetEnabler> enablers = new ApplicationModuleB().enablers();
         assertThat(enablers.size(), is(2));
         for (FacetEnabler enabler : enablers.values())
-            assertThat(enabler, anyOf(instanceOf(GuiceInjectionEnabler.class), instanceOf(Servlet3Enabler.class)));
+            assertThat(enabler, anyOf(instanceOf(GuiceModuleEnabler.class), instanceOf(Servlet3Enabler.class)));
         for (Annotation annotation : enablers.keySet())
-            assertThat(annotation.annotationType(), anyOf(equalTo(GuiceInjection.class), equalTo(Servlet3.class)));
+            assertThat(annotation.annotationType(), anyOf(equalTo(GuiceModule.class), equalTo(Servlet3.class)));
     }
 
     @Test
@@ -59,9 +59,9 @@ public class ApplicationModuleTest {
         Map<Annotation, FacetEnabler> enablers = new ApplicationModuleD().enablers();
         assertThat(enablers.size(), is(2));
         for (FacetEnabler enabler : enablers.values())
-            assertThat(enabler, anyOf(instanceOf(GuiceInjectionEnabler.class), instanceOf(Servlet3Enabler.class)));
+            assertThat(enabler, anyOf(instanceOf(GuiceModuleEnabler.class), instanceOf(Servlet3Enabler.class)));
         for (Annotation annotation : enablers.keySet())
-            assertThat(annotation.annotationType(), anyOf(equalTo(GuiceInjection.class), equalTo(Servlet3.class)));
+            assertThat(annotation.annotationType(), anyOf(equalTo(GuiceModule.class), equalTo(Servlet3.class)));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ApplicationModuleTest {
     }
 
     @Application("b")
-    @GuiceInjection
+    @GuiceModule
     @Servlet3
     private static class ApplicationModuleB extends ApplicationModule<ConfigA> {
 
@@ -158,7 +158,7 @@ public class ApplicationModuleTest {
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Stack
-    @GuiceInjection
+    @GuiceModule
     @Servlet3
     private @interface MyStack {
     }
@@ -176,7 +176,7 @@ public class ApplicationModuleTest {
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Stack
-    @GuiceInjection
+    @GuiceModule
     @Servlet3
     private @interface MyStack1 {
     }

@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.core.guiceinjection.p1;
+package com.thoughtworks.i0.core.guicemodule.p1;
 
 import com.google.inject.AbstractModule;
 
