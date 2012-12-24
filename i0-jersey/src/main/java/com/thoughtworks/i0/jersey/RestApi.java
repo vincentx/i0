@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Facet(JerseyEnabler.class)
 public @interface RestApi {
-    String prefix() default "/api*";
+    String prefix() default "/api/*";
 
     String[] packages() default {};
 }

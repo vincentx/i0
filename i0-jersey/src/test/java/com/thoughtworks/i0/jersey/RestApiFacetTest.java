@@ -7,6 +7,7 @@ import com.thoughtworks.i0.core.Launcher;
 import com.thoughtworks.i0.core.ServletContainer;
 import com.thoughtworks.i0.jersey.api.AutoScan;
 import com.thoughtworks.i0.jersey.api.Specified;
+import com.thoughtworks.i0.jersey.api.V2;
 import com.thoughtworks.i0.jersey.api.p2.Data;
 import org.junit.After;
 import org.junit.Test;
@@ -26,6 +27,13 @@ public class RestApiFacetTest {
         server = Launcher.launch(new AutoScan(), false);
         assertThat(get("http://localhost:8051/autoscan/api/p1"), is("resource1"));
         assertThat(get("http://localhost:8051/autoscan/api/p2"), is("resource2"));
+    }
+
+    @Test
+    public void should_register_all_packages_under_different_prefix() throws Exception {
+        server = Launcher.launch(new V2(), false);
+        assertThat(get("http://localhost:8051/autoscan/api/v2/p1"), is("resource1"));
+        assertThat(get("http://localhost:8051/autoscan/api/v2/p2"), is("resource2"));
     }
 
     @Test(expected = UniformInterfaceException.class)
