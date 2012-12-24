@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.thoughtworks.i0</groupId>
-  <artifactId>i0-core</artifactId>
+  <artifactId>i0-persist-jpa</artifactId>
   <version>0.2.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20121224.164451</timestamp>
-      <buildNumber>2</buildNumber>
+      <timestamp>20121224.164453</timestamp>
+      <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20121224164451</lastUpdated>
+    <lastUpdated>20121224164453</lastUpdated>
   </versioning>
 </metadata>

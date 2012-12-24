@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.thoughtworks.i0</groupId>
-  <artifactId>i0-core</artifactId>
-  <version>0.1.0</version>
+  <artifactId>i0-persist-jpa</artifactId>
+  <version>0.2.0-SNAPSHOT</version>
   <versioning>
     <versions>
-      <version>0.1.0</version>
       <version>0.2.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20121224164451</lastUpdated>
+    <lastUpdated>20121224164453</lastUpdated>
   </versioning>
 </metadata>
