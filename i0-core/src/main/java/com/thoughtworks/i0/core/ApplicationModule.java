@@ -52,7 +52,7 @@ public abstract class ApplicationModule<T extends Configuration> extends Abstrac
             try {
                 builder.put(annotation, enablerClass.getConstructor().newInstance());
             } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                throw new IllegalArgumentException("Can not create enabler for facet: " + facet.annotationType().getName());
+                throw new IllegalArgumentException("Can not create enabler for facet: " + facet);
             }
         }
     }
