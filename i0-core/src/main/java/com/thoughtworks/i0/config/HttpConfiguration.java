@@ -107,7 +107,7 @@ public class HttpConfiguration {
         return idleTimeout;
     }
 
-    private HttpConfiguration() {
+    public HttpConfiguration() {
     }
 
     private HttpConfiguration(Optional<String> host, int port, int minThread, int maxThread, Duration maxIdleTime, Duration idleTimeout, int acceptorThreads, int selectorThreads, int acceptQueueSize, Optional<Duration> soLingerTime, Optional<SslConfiguration> ssl) {

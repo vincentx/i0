@@ -49,7 +49,6 @@ public class DurationTest {
         assertThat(valueOf("1 days"), is(new Duration(1L, DAYS)));
     }
 
-
     @Test
     public void should_convert_duration_to_value_in_milliseconds() {
         assertThat(new Duration(1L, MILLISECONDS).value(), is(1L));

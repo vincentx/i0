@@ -46,7 +46,7 @@ public class Configuration {
     @NotNull
     private LoggingConfiguration logging;
 
-    protected Configuration() {
+    public Configuration() {
         http = config().http().build();
         logging = config().logging().build();
     }

@@ -41,7 +41,5 @@ public class SizeTest {
         assertThat(new Size(1L, KB).value(), is(8L * 1024));
         assertThat(new Size(1L, MB).value(), is(8L * 1024 * 1024));
         assertThat(new Size(1L, GB).value(), is(8L * 1024 * 1024 * 1024));
-
     }
-
 }

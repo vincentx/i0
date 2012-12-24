@@ -31,7 +31,7 @@ public class LoggingConfiguration {
         @NotNull
         private TimeZone timeZone = UTC;
 
-        private ConsoleConfiguration() {
+        public ConsoleConfiguration() {
         }
 
         private ConsoleConfiguration(LogLevel level, Optional<String> format, TimeZone timeZone) {
@@ -91,7 +91,7 @@ public class LoggingConfiguration {
             @NotNull
             private Size maxFileSize = new Size(100, Size.Unit.MB);
 
-            private ArchiveConfiguration() {
+            public ArchiveConfiguration() {
             }
 
             private ArchiveConfiguration(String namePattern, int maxHistory, Size maxFileSize) {
@@ -154,7 +154,7 @@ public class LoggingConfiguration {
         @NotNull
         private Optional<ArchiveConfiguration> archive = Optional.absent();
 
-        private FileConfiguration() {
+        public FileConfiguration() {
         }
 
         private FileConfiguration(LogLevel level, Optional<String> format, TimeZone timeZone, String filename, Optional<ArchiveConfiguration> archive) {
@@ -229,7 +229,7 @@ public class LoggingConfiguration {
     @NotNull
     private Optional<FileConfiguration> file = Optional.absent();
 
-    private LoggingConfiguration() {
+    public LoggingConfiguration() {
     }
 
     private LoggingConfiguration(LogLevel level, Map<String, LogLevel> loggers, Optional<ConsoleConfiguration> console, Optional<FileConfiguration> file) {

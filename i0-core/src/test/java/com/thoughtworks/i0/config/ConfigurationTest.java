@@ -4,24 +4,16 @@ import com.google.common.base.Optional;
 import com.thoughtworks.i0.config.util.Duration;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.config.util.Size;
-import com.thoughtworks.i0.persist.WithDatabase;
-import com.thoughtworks.i0.persist.DatabaseConfiguration;
-import com.thoughtworks.i0.persist.config.H2;
-import com.thoughtworks.i0.persist.config.Hibernate;
 import org.junit.Test;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static com.thoughtworks.i0.config.Configuration.config;
 import static com.thoughtworks.i0.config.Configuration.read;
+import static com.thoughtworks.i0.config.HttpConfiguration.*;
 import static com.thoughtworks.i0.config.util.Duration.Unit.MILLISECONDS;
 import static com.thoughtworks.i0.config.util.Duration.Unit.SECONDS;
-import static com.thoughtworks.i0.config.HttpConfiguration.*;
-import static com.thoughtworks.i0.persist.DatabaseConfiguration.database;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -95,40 +87,7 @@ public class ConfigurationTest {
 
     }
 
-    @Test
-    public void should_populate_customized_configurations() throws IOException {
-        DbConfiguration configuration = read(fixture("customized_configurations.yml"), DbConfiguration.class);
-        assertThat(configuration.getDatabase(), is(database().with(H2.driver, H2.compatible("ORACLE"),
-                H2.privateMemoryDB, Hibernate.dialect("Oracle")).user("sa").password("")
-                .migration()
-                .auto(false)
-                .locations("db/migration")
-                .placeholder("user", "real_user")
-                .end()
-                .build()));
-    }
-
-
     private InputStream fixture(String fixture) {
         return getClass().getResourceAsStream(fixture);
-    }
-
-    @XmlType
-    public static class DbConfiguration extends Configuration implements WithDatabase {
-        @NotNull
-        private DatabaseConfiguration database;
-
-        private DbConfiguration() {
-        }
-
-        public DbConfiguration(Configuration configuration, DatabaseConfiguration database) {
-            super(configuration);
-            this.database = database;
-        }
-
-        @XmlElement
-        public DatabaseConfiguration getDatabase() {
-            return database;
-        }
     }
 }
