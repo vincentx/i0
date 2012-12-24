@@ -3,6 +3,6 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence         http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
              version="1.0">
     <persistence-unit name="domain" transaction-type="RESOURCE_LOCAL">
-        <class>com.thoughtworks.i0.projects.application.module.domain.DomainObject</class>
+        <class>com.thoughtworks.i0.jpa.persist.DomainObject</class>
     </persistence-unit>
 </persistence>

@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.persist;
+package com.thoughtworks.i0.jpa;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -34,7 +34,7 @@ public class DatabaseConfiguration {
     private Map<String, String> properties = ImmutableMap.of();
     private Optional<MigrationConfiguration> migration = absent();
 
-    private DatabaseConfiguration() {
+    public DatabaseConfiguration() {
     }
 
     DatabaseConfiguration(String driver, String url, String password, String user, Map<String, String> properties, Optional<MigrationConfiguration> migration) {
@@ -122,10 +122,10 @@ public class DatabaseConfiguration {
     @XmlType
     public static class MigrationConfiguration {
         private boolean auto = true;
-        private String[] locations = new String[]{"db/migration"};
+        private String[] locations = new String[]{"com/thoughtworks/i0/jersey/api/p2/migration"};
         private Map<String, String> placeholders = ImmutableMap.of();
 
-        private MigrationConfiguration() {
+        public MigrationConfiguration() {
         }
 
         public MigrationConfiguration(boolean auto, String[] locations, Map<String, String> placeholders) {

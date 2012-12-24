@@ -60,11 +60,12 @@ public class Launcher {
 
         ServletContainer container = createServletContainer(module, configuration);
         container.addServletContext(module.path(), true, module);
-        container.start(standalone);
 
         for (Map.Entry<Annotation, FacetEnabler> enabler : module.enablers().entrySet())
             if (enabler.getValue() instanceof ContainerConfigurator)
                 ((ContainerConfigurator) enabler.getValue()).configure(container, enabler.getKey(), configuration);
+
+        container.start(standalone);
 
         return container;
     }

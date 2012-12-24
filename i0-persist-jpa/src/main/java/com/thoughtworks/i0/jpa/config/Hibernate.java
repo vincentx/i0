@@ -1,6 +1,8 @@
-package com.thoughtworks.i0.persist.config;
+package com.thoughtworks.i0.jpa.config;
 
-import static com.thoughtworks.i0.persist.DatabaseConfiguration.DatabaseConfigurationBuilder;
+import com.thoughtworks.i0.jpa.DatabaseConfiguration;
+
+import static com.thoughtworks.i0.jpa.DatabaseConfiguration.DatabaseConfigurationBuilder;
 
 public class Hibernate {
     public static DatabaseConfigurationBuilder.Setting dialect(final String name) {

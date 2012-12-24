@@ -6,7 +6,7 @@ import com.google.inject.Module;
 public interface ServletContainer {
     void addServletContext(String name, boolean shareNothing, Module... modules);
 
-    Injector context(String name);
+    Injector injector();
 
     void start(boolean standalone) throws Exception;
 

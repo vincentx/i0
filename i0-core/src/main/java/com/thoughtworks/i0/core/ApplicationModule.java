@@ -89,7 +89,9 @@ public abstract class ApplicationModule<T extends Configuration> extends Abstrac
         return configuration.get();
     }
 
-    protected abstract T createDefaultConfiguration(Configuration.ConfigurationBuilder config);
+    protected T createDefaultConfiguration(Configuration.ConfigurationBuilder config) {
+        return null;
+    }
 
     public String path() {
         return application.value().startsWith("/") ? application.value() : "/" + application.value();

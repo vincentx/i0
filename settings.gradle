@@ -1,1 +1,1 @@
-include 'i0-core', 'i0-gradle-plugin'
+include 'i0-core', 'i0-jetty', 'i0-jersey', 'i0-persist-jpa'

@@ -1,7 +1,7 @@
-package com.thoughtworks.i0.persist.internal.migration;
+package com.thoughtworks.i0.jpa.internal.migration;
 
 import com.googlecode.flyway.core.Flyway;
-import com.thoughtworks.i0.persist.DatabaseConfiguration;
+import com.thoughtworks.i0.jpa.DatabaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

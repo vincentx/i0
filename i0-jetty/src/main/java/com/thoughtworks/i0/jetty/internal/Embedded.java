@@ -32,6 +32,7 @@ import static org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS;
 public class Embedded implements ServletContainer {
     private final Server server;
     private final ImmutableMap.Builder<String, Injector> injectors = ImmutableMap.builder();
+    private Injector injector;
 
     public Embedded(HttpConfiguration configuration) {
         server = new Server(threadPool(configuration));
@@ -45,8 +46,7 @@ public class Embedded implements ServletContainer {
         handler.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
         handler.addServlet(DefaultServlet.class, "/*");
 
-        final Injector injector = Guice.createInjector(modules);
-        injectors.put(name, injector);
+        injector = Guice.createInjector(modules);
 
         handler.addEventListener(new GuiceServletContextListener() {
             @Override
@@ -57,8 +57,8 @@ public class Embedded implements ServletContainer {
     }
 
     @Override
-    public Injector context(String name) {
-        return injectors.build().get(name);
+    public Injector injector() {
+        return injector;
     }
 
     private String root(String name) {

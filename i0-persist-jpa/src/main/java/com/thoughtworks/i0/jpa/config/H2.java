@@ -1,10 +1,10 @@
-package com.thoughtworks.i0.persist.config;
+package com.thoughtworks.i0.jpa.config;
 
 import java.io.File;
 import java.io.IOException;
 
 import static com.google.common.base.Throwables.propagate;
-import static com.thoughtworks.i0.persist.DatabaseConfiguration.DatabaseConfigurationBuilder;
+import static com.thoughtworks.i0.jpa.DatabaseConfiguration.DatabaseConfigurationBuilder;
 
 public class H2 {
     public static final DatabaseConfigurationBuilder.Setting driver = new DatabaseConfigurationBuilder.Setting() {

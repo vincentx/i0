@@ -1,0 +1,12 @@
+database:
+  driver: org.h2.Driver
+  url: jdbc:h2:mem
+  user: sa
+  password:
+  properties:
+    hibernate.dialect: org.hibernate.dialect.OracleDialect
+  migration:
+    auto: false
+    locations: ["db/migration"]
+    placeholders:
+      user: real_user
