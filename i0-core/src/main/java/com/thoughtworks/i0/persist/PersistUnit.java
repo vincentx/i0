@@ -1,6 +1,6 @@
 package com.thoughtworks.i0.persist;
 
-import com.thoughtworks.i0.facet.Facet;
+import com.thoughtworks.i0.core.Facet;
 import com.thoughtworks.i0.persist.internal.PersistUnitEnabler;
 
 import java.lang.annotation.*;

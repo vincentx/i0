@@ -12,8 +12,9 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.thoughtworks.i0.config.Configuration;
-import com.thoughtworks.i0.facet.Facet;
-import com.thoughtworks.i0.facet.FacetEnabler;
+import com.thoughtworks.i0.core.BindingConfigurator;
+import com.thoughtworks.i0.core.Facet;
+import com.thoughtworks.i0.core.FacetEnabler;
 import com.thoughtworks.i0.internal.util.ClassScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +96,8 @@ public class ApplicationModule<T extends Configuration> extends AbstractModule {
         }
 
         for (Map.Entry<Annotation, FacetEnabler> enabler : enablers.entrySet())
-            enabler.getValue().createBindings(binder(), enabler.getKey(), getConfiguration());
+            if (enabler.getValue() instanceof BindingConfigurator)
+                ((BindingConfigurator) enabler.getValue()).configure(binder(), enabler.getKey(), getConfiguration());
     }
 
     void setConfiguration(Configuration configuration) {

@@ -5,7 +5,9 @@ import com.thoughtworks.i0.config.util.Duration;
 import com.thoughtworks.i0.config.util.LogLevel;
 import com.thoughtworks.i0.config.util.Size;
 import com.thoughtworks.i0.persist.WithDatabase;
-import com.thoughtworks.i0.persist.config.DatabaseConfiguration;
+import com.thoughtworks.i0.persist.DatabaseConfiguration;
+import com.thoughtworks.i0.persist.config.H2;
+import com.thoughtworks.i0.persist.config.Hibernate;
 import org.junit.Test;
 
 import javax.validation.constraints.NotNull;
@@ -16,12 +18,10 @@ import java.io.InputStream;
 
 import static com.thoughtworks.i0.config.Configuration.config;
 import static com.thoughtworks.i0.config.Configuration.read;
-import static com.thoughtworks.i0.config.HttpConfiguration.*;
 import static com.thoughtworks.i0.config.util.Duration.Unit.MILLISECONDS;
 import static com.thoughtworks.i0.config.util.Duration.Unit.SECONDS;
-import static com.thoughtworks.i0.persist.config.DatabaseConfiguration.database;
-import static com.thoughtworks.i0.persist.config.DatabaseConfigurationBuilder.H2;
-import static com.thoughtworks.i0.persist.config.DatabaseConfigurationBuilder.Hibernate;
+import static com.thoughtworks.i0.config.HttpConfiguration.*;
+import static com.thoughtworks.i0.persist.DatabaseConfiguration.database;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

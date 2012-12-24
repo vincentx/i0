@@ -1,8 +1,8 @@
 package com.thoughtworks.i0;
 
 import com.thoughtworks.i0.config.Configuration;
-import com.thoughtworks.i0.internal.server.jetty.Embedded;
 import com.thoughtworks.i0.projects.application.module.TestApplication;
+import com.thoughtworks.i0.core.ServletContainer;
 import org.junit.After;
 import org.junit.Test;
 
@@ -11,11 +11,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class ApplicationModuleTest {
-    private Embedded server;
+    private ServletContainer server;
 
     @After
     public void after() throws Exception {
-        if (server != null && server.isRunning()) server.stop();
+        if (server != null) server.stop();
     }
 
     @Test(expected = IllegalStateException.class)

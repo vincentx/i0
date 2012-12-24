@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.internal.server.jetty;
+package com.thoughtworks.i0.jetty.internal;
 
 
 import com.google.common.base.Function;
@@ -12,6 +12,7 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.thoughtworks.i0.config.HttpConfiguration;
 import com.thoughtworks.i0.config.util.Duration;
+import com.thoughtworks.i0.core.ServletContainer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -28,7 +29,7 @@ import static javax.servlet.DispatcherType.REQUEST;
 import static org.eclipse.jetty.servlet.ServletContextHandler.NO_SESSIONS;
 import static org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS;
 
-public class Embedded {
+public class Embedded implements ServletContainer {
     private final Server server;
     private final ImmutableMap.Builder<String, Injector> injectors = ImmutableMap.builder();
 
@@ -37,6 +38,7 @@ public class Embedded {
         server.setConnectors(configureConnectors(configuration));
     }
 
+    @Override
     public void addServletContext(String name, boolean shareNothing, final Module... modules) {
         Preconditions.checkState(!server.isRunning(), "Server is running.");
         ServletContextHandler handler = new ServletContextHandler(server, root(name), shareNothing ? NO_SESSIONS : SESSIONS);
@@ -54,6 +56,7 @@ public class Embedded {
         });
     }
 
+    @Override
     public Injector context(String name) {
         return injectors.build().get(name);
     }
@@ -98,13 +101,14 @@ public class Embedded {
         return new QueuedThreadPool(configuration.getMaxThread(), configuration.getMinThread(), (int) configuration.getMaxIdleTime().value());
     }
 
+    @Override
     public void start(boolean standalone) throws Exception {
         server.start();
         if (standalone) server.join();
     }
 
+    @Override
     public void stop() throws Exception {
-        Preconditions.checkState(server.isRunning(), "Server is not running");
         server.stop();
     }
 
@@ -135,8 +139,4 @@ public class Embedded {
             return sslContextFactory;
         }
     };
-
-    public boolean isRunning() {
-        return server.isRunning();
-    }
 }

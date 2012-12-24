@@ -2,6 +2,8 @@ package com.thoughtworks.i0.internal.server.jetty;
 
 import com.google.inject.servlet.ServletModule;
 import com.thoughtworks.i0.config.HttpConfiguration;
+import com.thoughtworks.i0.core.ServletContainer;
+import com.thoughtworks.i0.jetty.internal.Embedded;
 import com.thoughtworks.i0.test.helpers.HttpClientHelper;
 import org.junit.After;
 import org.junit.Test;
@@ -19,7 +21,7 @@ import static org.junit.Assert.assertThat;
 public class EmbeddedTest {
 
 
-    private Embedded server;
+    private ServletContainer server;
 
     @After
     public void after() throws Exception {

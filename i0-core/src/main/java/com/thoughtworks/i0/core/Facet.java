@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.facet;
+package com.thoughtworks.i0.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

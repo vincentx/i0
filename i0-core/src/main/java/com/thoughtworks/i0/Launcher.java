@@ -5,9 +5,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.thoughtworks.i0.config.Configuration;
-import com.thoughtworks.i0.facet.FacetEnabler;
+import com.thoughtworks.i0.core.*;
 import com.thoughtworks.i0.internal.logging.Logging;
-import com.thoughtworks.i0.internal.server.jetty.Embedded;
 import com.thoughtworks.i0.internal.util.ClassScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,18 +44,40 @@ public class Launcher {
             return input.exists();
         }
     };
+    public static final Predicate<Map.Entry<Annotation, FacetEnabler>> CONTAINER_CREATOR = new Predicate<Map.Entry<Annotation, FacetEnabler>>() {
+        @Override
+        public boolean apply(@Nullable Map.Entry<Annotation, FacetEnabler> input) {
+            return input.getValue() instanceof ContainerCreator;
+        }
+    };
 
-    public static Embedded launch(ApplicationModule<? extends Configuration> module, boolean standalone) throws Exception {
+    public static ServletContainer launch(ApplicationModule<? extends Configuration> module, boolean standalone) throws Exception {
         Configuration configuration = module.getConfiguration();
         Logging.configure(configuration.getLogging());
 
         for (Map.Entry<Annotation, FacetEnabler> enabler : module.getEnablers().entrySet())
-            enabler.getValue().performPreLaunchTasks(enabler.getKey(), configuration);
+            if (enabler.getValue() instanceof StartupTasks)
+                ((StartupTasks) enabler.getValue()).perform(enabler.getKey(), configuration);
 
-        Embedded server = new Embedded(configuration.getHttp());
-        server.addServletContext(module.name(), true, module);
-        server.start(standalone);
-        return server;
+        ServletContainer container = createServletContainer(module, configuration);
+        container.addServletContext(module.name(), true, module);
+        container.start(standalone);
+
+        for (Map.Entry<Annotation, FacetEnabler> enabler : module.getEnablers().entrySet())
+            if (enabler.getValue() instanceof ContainerConfigurator)
+                ((ContainerConfigurator) enabler.getValue()).configure(container, enabler.getKey(), configuration);
+
+        return container;
+    }
+
+    private static ServletContainer createServletContainer(ApplicationModule<? extends Configuration> module, Configuration configuration) {
+        Iterable<Map.Entry<Annotation, FacetEnabler>> creators = filter(module.getEnablers().entrySet(), CONTAINER_CREATOR);
+
+        checkArgument(size(creators) != 0, "No servlet container creator found!");
+        checkArgument(size(creators) == 1, "More than 1 servlet container found!");
+
+        Map.Entry<Annotation, FacetEnabler> creator = getLast(creators);
+        return ((ContainerCreator) creator.getValue()).create(creator.getKey(), configuration);
     }
 
     private static ApplicationModule<? extends Configuration> findApplicationModule(String name) throws Exception {

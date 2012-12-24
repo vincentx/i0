@@ -4,7 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.inject.Module;
 import com.thoughtworks.i0.Application;
 import com.thoughtworks.i0.ApplicationModule;
-import com.thoughtworks.i0.facet.Facet;
+import com.thoughtworks.i0.core.Facet;
 
 import javax.annotation.Nullable;
 import javax.servlet.Filter;

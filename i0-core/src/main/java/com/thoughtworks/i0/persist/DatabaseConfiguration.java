@@ -1,7 +1,10 @@
-package com.thoughtworks.i0.persist.config;
+package com.thoughtworks.i0.persist;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.thoughtworks.i0.config.builder.Builder;
+import com.thoughtworks.i0.config.builder.OptionalBuilder;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.collect.Iterables.toArray;
 
 @XmlType
 public class DatabaseConfiguration {
@@ -165,6 +169,107 @@ public class DatabaseConfiguration {
             result = 31 * result + Arrays.hashCode(locations);
             result = 31 * result + placeholders.hashCode();
             return result;
+        }
+    }
+
+    public static class DatabaseConfigurationBuilder implements Builder<DatabaseConfiguration> {
+        private String driver;
+        private String url;
+        private StringBuffer urlAppendix = new StringBuffer();
+        private String password;
+        private String user;
+        private ImmutableMap.Builder<String, String> properties = ImmutableMap.builder();
+        private OptionalBuilder<MigrationConfigurationBuilder, MigrationConfiguration>
+                migration = new OptionalBuilder<>(new MigrationConfigurationBuilder());
+
+        DatabaseConfigurationBuilder() {
+        }
+
+        public DatabaseConfigurationBuilder driver(String driver) {
+            this.driver = driver;
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder user(String user) {
+            this.user = user;
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder appendToUrl(String appendix) {
+            this.urlAppendix.append(appendix);
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder property(String key, String value) {
+            properties.put(key, value);
+            return this;
+        }
+
+        public DatabaseConfigurationBuilder with(Setting... settings) {
+            for (Setting setting : settings) {
+                setting.set(this);
+            }
+            return this;
+        }
+
+        public MigrationConfigurationBuilder migration() {
+            return migration.builder();
+        }
+
+        public static abstract class Setting {
+            public static Setting and(final Setting... settings) {
+                return new Setting() {
+                    @Override
+                    public void set(DatabaseConfigurationBuilder config) {
+                        for (Setting setting : settings) setting.set(config);
+                    }
+                };
+            }
+
+            public abstract void set(DatabaseConfigurationBuilder config);
+        }
+
+        public DatabaseConfiguration build() {
+            return new DatabaseConfiguration(driver, url, password, user, properties.build(), migration.build());
+        }
+
+        public class MigrationConfigurationBuilder implements Builder<DatabaseConfiguration.MigrationConfiguration> {
+            private boolean auto = true;
+            private ImmutableSet.Builder<String> locations = ImmutableSet.builder();
+            private ImmutableMap.Builder<String, String> placeholders = ImmutableMap.builder();
+
+            public MigrationConfigurationBuilder auto(boolean auto) {
+                this.auto = auto;
+                return this;
+            }
+
+            public MigrationConfigurationBuilder locations(String... locations) {
+                this.locations.add(locations);
+                return this;
+            }
+
+            public MigrationConfigurationBuilder placeholder(String placeholder, String value) {
+                placeholders.put(placeholder, value);
+                return this;
+            }
+
+            public DatabaseConfigurationBuilder end() {
+                return DatabaseConfigurationBuilder.this;
+            }
+
+            public MigrationConfiguration build() {
+                return new MigrationConfiguration(auto, toArray(locations.build(), String.class), placeholders.build());
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ package com.thoughtworks.i0.projects.application.module;
 
 import com.thoughtworks.i0.config.Configuration;
 import com.thoughtworks.i0.persist.WithDatabase;
-import com.thoughtworks.i0.persist.config.DatabaseConfiguration;
+import com.thoughtworks.i0.persist.DatabaseConfiguration;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
