@@ -21,11 +21,11 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.annotation.Nullable;
+import javax.servlet.DispatcherType;
 import java.util.EnumSet;
 
 import static com.google.common.collect.Iterables.toArray;
 import static com.thoughtworks.i0.config.HttpConfiguration.SslConfiguration;
-import static javax.servlet.DispatcherType.REQUEST;
 import static org.eclipse.jetty.servlet.ServletContextHandler.NO_SESSIONS;
 import static org.eclipse.jetty.servlet.ServletContextHandler.SESSIONS;
 
@@ -42,7 +42,7 @@ public class Embedded implements ServletContainer {
     public void addServletContext(String name, boolean shareNothing, final Module... modules) {
         Preconditions.checkState(!server.isRunning(), "Server is running.");
         ServletContextHandler handler = new ServletContextHandler(server, root(name), shareNothing ? NO_SESSIONS : SESSIONS);
-        handler.addFilter(GuiceFilter.class, "/*", EnumSet.of(REQUEST));
+        handler.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
         handler.addServlet(DefaultServlet.class, "/*");
 
         final Injector injector = Guice.createInjector(modules);
