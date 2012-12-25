@@ -1,8 +1,0 @@
-database:
-  driver: #db driver e.g. org.h2.Driver
-  url:    #db url e.g. jdbc:h2:mem
-# vendor specific properties
-#  properties:
-#    hibernate.hbm2ddl.auto: create-drop
-http:
-  port: 8080
