@@ -121,7 +121,7 @@ project(':i0-persist-jpa') {
     }
 }
 
-project(':i0-gradle-plugin') {
+project(':i0-gradle') {
     apply plugin: 'groovy'
 
     dependencies {

@@ -2,6 +2,7 @@ package com.thoughtworks.i0.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.bundling.Jar
 
 import static com.thoughtworks.i0.gradle.Configuration.configurable
@@ -31,6 +32,8 @@ class I0Plugin implements Plugin<Project> {
             mavenCentral()
             mavenRepo(url: 'https://github.com/vincentx/i0/raw/master/repository')
         }
+
+        project.plugins.apply(JavaPlugin.class)
 
         project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
             baseName = 'deploy'
