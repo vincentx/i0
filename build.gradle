@@ -40,6 +40,9 @@ subprojects {
         }
     }
 
+}
+
+configure(subprojects.findAll { it.name != 'i0-gradle' }) {
     dependencies {
         compile 'com.google.code.findbugs:jsr305:2.0.1'
         compile 'javax.inject:javax.inject:1'
