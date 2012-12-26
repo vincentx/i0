@@ -50,6 +50,11 @@ public class Launcher {
         }
     };
 
+    public static <T extends Configuration> ServletContainer launch(ApplicationModule<T> module, T configuration, boolean standalone) throws Exception {
+        module.setConfiguration(configuration);
+        return launch(module, standalone);
+    }
+
     public static ServletContainer launch(ApplicationModule<? extends Configuration> module, boolean standalone) throws Exception {
         Configuration configuration = module.configuration();
         Logging.configure(configuration.getLogging());

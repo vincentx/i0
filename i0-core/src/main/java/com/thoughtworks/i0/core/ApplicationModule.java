@@ -83,7 +83,7 @@ public abstract class ApplicationModule<T extends Configuration> extends Abstrac
         this.configuration = of((T) configuration);
     }
 
-    protected final T configuration() {
+    public final T configuration() {
         if (!configuration.isPresent()) configuration = fromNullable(createDefaultConfiguration(config()));
         Preconditions.checkArgument(configuration.isPresent(), "No configuration for module: " + getClass());
         return configuration.get();

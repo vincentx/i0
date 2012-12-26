@@ -37,6 +37,15 @@ class Stack {
                 compile "com.google.guava:guava:$java.guava"
                 java.libraries.each { compile it }
             }
+
+            project.logger.debug("Checking project provision provider puppet: ${project.extensions.findByName("puppet") != null}")
+            if (project.extensions.findByName("puppet") != null) {
+                project.puppet {
+                    module 'puppetlabs/stdlib'
+                    module 'puppetlabs/java'
+                }
+                project.extensions.puppetClasses.add('java')
+            }
         }
     }
 

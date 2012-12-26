@@ -1,5 +1,7 @@
 package com.thoughtworks.i0.gradle
 
+import com.thoughtworks.i0.gradle.puppet.ModuleServers
+import com.thoughtworks.i0.gradle.puppet.Modules
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
@@ -18,37 +20,26 @@ class I0Plugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.extensions.i0Version = "0.2.0-SNAPSHOT"
-        project.extensions.guiceVersion = "3.0"
-        project.extensions.slf4jVersion = "1.7.2"
-        project.extensions.logbackVersion = "1.0.7"
-        project.extensions.jacksonVersion = "2.1.1"
-        project.extensions.hibernateValidatorVersion = "4.3.0.Final"
+        addComponentVersions(project)
+
         project.extensions.stackComponents = [language: Stack.language, embedded: Stack.embedded,
                 restful: Stack.restful, jpa: Stack.jpa]
-        project.extensions.stack = configurable(Component.merge(project.extensions.stackComponents.values()))
 
-        project.repositories {
-            mavenCentral()
-            mavenRepo(url: 'https://github.com/vincentx/i0/raw/master/repository')
-        }
+        project.extensions.deployComponents = [provision: Deploy.provision]
+
+        project.extensions.stack = configurable(Component.merge(project.extensions.stackComponents.values()))
+        project.extensions.deploy = configurable(Component.merge(project.extensions.deployComponents.values()))
+
+        configRepositories(project)
 
         project.plugins.apply(JavaPlugin.class)
 
-        project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
-            baseName = 'deploy'
-
-            from { project.configurations.runtime.collect { project.zipTree it } } {
-                exclude 'META-INF/MANIFEST.MF', '**/*.RSA', '**/*.SF', '**/*.DSA'
-            }
-            from { project.configurations.default.allArtifacts.files.collect { project.zipTree it } }
-
-            manifest {
-                attributes 'Main-Class': 'com.thoughtworks.i0.core.Launcher'
-            }
-        }
+        addTasks(project)
 
         project.afterEvaluate {
+            for (component in project.extensions.deployComponents.values())
+                component.configure(project)
+
             for (component in project.extensions.stackComponents.values())
                 component.configure(project)
 
@@ -80,5 +71,36 @@ class I0Plugin implements Plugin<Project> {
                 runtime "com.sun.jersey:jersey-core:1.16"
             }
         }
+    }
+
+    private void addTasks(Project project) {
+        project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
+            baseName = 'deploy'
+
+            from { project.configurations.runtime.collect { project.zipTree it } } {
+                exclude 'META-INF/MANIFEST.MF', '**/*.RSA', '**/*.SF', '**/*.DSA'
+            }
+            from { project.configurations.default.allArtifacts.files.collect { project.zipTree it } }
+
+            manifest {
+                attributes 'Main-Class': 'com.thoughtworks.i0.core.Launcher'
+            }
+        }
+    }
+
+    private void configRepositories(Project project) {
+        project.repositories {
+            mavenCentral()
+            mavenRepo(url: 'https://github.com/vincentx/i0/raw/master/repository')
+        }
+    }
+
+    private void addComponentVersions(Project project) {
+        project.extensions.i0Version = "0.2.0-SNAPSHOT"
+        project.extensions.guiceVersion = "3.0"
+        project.extensions.slf4jVersion = "1.7.2"
+        project.extensions.logbackVersion = "1.0.7"
+        project.extensions.jacksonVersion = "2.1.1"
+        project.extensions.hibernateValidatorVersion = "4.3.0.Final"
     }
 }

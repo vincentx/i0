@@ -2,6 +2,7 @@ package com.thoughtworks.i0.gradle
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Test
 
@@ -42,6 +43,12 @@ class I0PluginTest {
                 "ch.qos.logback:logback-classic:1.0.7", "org.slf4j:jul-to-slf4j:1.7.2",
                 "org.slf4j:log4j-over-slf4j:1.7.2"))
     }
+
+//    @Test
+//    public void should_add_puppet_module_servers_and_puppet_configuration() {
+//        assertThat(project.extensions.puppetModuleServers.servers.size(), CoreMatchers.is(1))
+//        println project.extensions.puppet.modules
+//    }
 
     private def dependencies(name) {
         project.configurations."$name".allDependencies.collect { "$it.group:$it.name:$it.version".toString() }

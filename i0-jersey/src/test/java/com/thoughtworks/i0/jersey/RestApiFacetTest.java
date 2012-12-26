@@ -49,6 +49,11 @@ public class RestApiFacetTest {
         assertThat(json("http://localhost:8051/autoscan/api/p2/data", Data.class), is(new Data("data")));
     }
 
+    @Test
+    public void should() {
+        System.out.println(get("http://forge.puppetlabs.com/users/puppetlabs/modules/java/releases/find.json"));
+    }
+
     private String get(String uri) {
         return create().resource(uri).get(String.class);
     }
