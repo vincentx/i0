@@ -64,7 +64,7 @@ public class ClassScanner {
             try {
                 Class aClass = checkNotNull(classForName(name.replaceAll("/", "."), classloader));
                 if (predicate.apply(aClass)) found.add(aClass);
-            } catch (Exception ignore) {
+            } catch (Throwable ignore) {
             }
         }
 
