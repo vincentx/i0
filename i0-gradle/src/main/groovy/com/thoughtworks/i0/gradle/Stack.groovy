@@ -59,7 +59,7 @@ class Stack {
                 transitive = false
             }
 
-            runtime "com.sun.jersey:jersey-core:$jersey.version"
+            compile "com.sun.jersey:jersey-core:$jersey.version"
             runtime "com.sun.jersey:jersey-server:$jersey.version"
             runtime "com.sun.jersey:jersey-servlet:$jersey.version"
             runtime "com.sun.jersey.contribs:jersey-guice:$jersey.version"
