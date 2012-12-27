@@ -1,15 +1,15 @@
 package com.thoughtworks.i0.gradle.puppet
 
-import com.thoughtworks.i0.gradle.Environment
-import com.thoughtworks.i0.gradle.EnvironmentContainer
-import com.thoughtworks.i0.gradle.Provisioner
+import com.thoughtworks.i0.gradle.core.Environment
+import com.thoughtworks.i0.gradle.core.EnvironmentSet
+import com.thoughtworks.i0.gradle.core.Provisioner
 
 class Puppet implements Provisioner {
-    final String name = "puppet"
-    final ModuleServerSet servers = new ModuleServerSet()
+    String name = "puppet"
+    ModuleServerSet servers = new ModuleServerSet()
 
     @Override
-    void configure(EnvironmentContainer environments) {
+    void configure(EnvironmentSet environments) {
         environments.extensions.add("moduleServers", servers)
     }
 
