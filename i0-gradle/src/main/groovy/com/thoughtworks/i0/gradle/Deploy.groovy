@@ -1,11 +1,13 @@
 package com.thoughtworks.i0.gradle
 
-import com.thoughtworks.i0.gradle.puppet.Module
-import com.thoughtworks.i0.gradle.puppet.ModuleServers
-import com.thoughtworks.i0.gradle.puppet.Modules
+import com.thoughtworks.i0.gradle.deploy.Module
+import com.thoughtworks.i0.gradle.deploy.ModuleServers
+import com.thoughtworks.i0.gradle.deploy.Modules
+import com.thoughtworks.i0.gradle.deploy.Vagrant
 import org.gradle.api.Project
 
 import static com.thoughtworks.i0.gradle.Configuration.nullable
+import static com.thoughtworks.i0.gradle.deploy.Puppet.initDevelopmentManifest
 
 class Deploy {
     static Component provision = new Component("deploy", "provision").extend("puppet", nullable(
@@ -50,9 +52,17 @@ class Deploy {
                 project.delete "vendor/puppet/$module.name/$file"
             }
         }
+
+        project.task('initPuppet', dependsOn: 'resolvePuppetModules') << {
+            initDevelopmentManifest(project)
+
+        }
+
     }
 
     static def vagrant(Project project, vagrant) {
-
+        project.task("initVagrant") << {
+            new File('Vagrant').withWriter { it.write(Vagrant.vagrantFile(project, vagrant)) }
+        }
     }
 }

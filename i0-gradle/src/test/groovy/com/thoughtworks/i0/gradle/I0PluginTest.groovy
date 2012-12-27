@@ -47,7 +47,7 @@ class I0PluginTest {
 //    @Test
 //    public void should_add_puppet_module_servers_and_puppet_configuration() {
 //        assertThat(project.extensions.puppetModuleServers.servers.size(), CoreMatchers.is(1))
-//        println project.extensions.puppet.modules
+//        println project.extensions.deploy.modules
 //    }
 
     private def dependencies(name) {

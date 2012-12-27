@@ -1,7 +1,5 @@
 package com.thoughtworks.i0.gradle
 
-import com.thoughtworks.i0.gradle.puppet.ModuleServers
-import com.thoughtworks.i0.gradle.puppet.Modules
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
@@ -25,7 +23,7 @@ class I0Plugin implements Plugin<Project> {
         project.extensions.stackComponents = [language: Stack.language, embedded: Stack.embedded,
                 restful: Stack.restful, jpa: Stack.jpa]
 
-        project.extensions.deployComponents = [provision: Deploy.provision]
+        project.extensions.deployComponents = [provision: Deploy.provision, local: Deploy.localEnvironment]
 
         project.extensions.stack = configurable(Component.merge(project.extensions.stackComponents.values()))
         project.extensions.deploy = configurable(Component.merge(project.extensions.deployComponents.values()))
