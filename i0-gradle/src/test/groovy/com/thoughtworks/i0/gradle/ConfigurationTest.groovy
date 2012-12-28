@@ -2,7 +2,8 @@ package com.thoughtworks.i0.gradle
 
 import org.junit.Test
 
-import static com.thoughtworks.i0.gradle.Configuration.*
+import static com.thoughtworks.i0.gradle.Configuration.configurable
+import static com.thoughtworks.i0.gradle.Configuration.nullable
 import static org.hamcrest.CoreMatchers.is
 import static org.junit.Assert.assertThat
 

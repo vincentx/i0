@@ -8,6 +8,7 @@ class Facets {
 
     Map<String, Provisioner> provisioners = [:]
     Map<String, HostingFactory> hostings = [:]
+    Map<List<String>, Map<String, Class<? extends ApplicationFacet>>> applicationFacets = [:]
 
     Facets(Instantiator instantiator) {
         this.instantiator = instantiator
@@ -17,13 +18,21 @@ class Facets {
         provisionerClasses.entrySet().each { registerProvisioner(it.key, it.value) }
     }
 
+    def hosting(Map<String, Class<Hosting>> hostingClasses) {
+        hosting(hostingClasses, null)
+    }
+
     def hosting(Map<String, Class<Hosting>> hostingClasses, Closure closure) {
         hostingClasses.entrySet().each {
             if (hostings.containsKey(it.key)) throw IllegalArgumentException("duplicate hosting: $it.key")
             def factory = new HostingFactory(it.value)
-            ConfigureUtil.configure(closure, factory)
+            if (closure != null) ConfigureUtil.configure(closure, factory)
             hostings.put(it.key, factory)
         }
+    }
+
+    def application(Closure closure) {
+        ConfigureUtil.configure(closure, new ApplicationFacetHandler(this))
     }
 
     class HostingFactory {
@@ -53,11 +62,6 @@ class Facets {
             }
             return hosting
         }
-    }
-
-
-    def hosting(Class<Hosting>[] hostingClasses, Closure closure) {
-        hostingClasses.each { hosting(it, closure) }
     }
 
     private void registerProvisioner(String name, Class<Provisioner> provisionerClass) {

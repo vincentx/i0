@@ -32,6 +32,14 @@ class I0Plugin implements Plugin<Project> {
 
         project.plugins.apply(JavaPlugin.class)
 
+//        project.facets {
+//            provisioner puppet: Puppet
+//            hosting(vagrant: Vagrant) {
+//                feature ubuntu: Ubuntu
+//            }
+//        }
+
+
         addTasks(project)
 
         project.afterEvaluate {

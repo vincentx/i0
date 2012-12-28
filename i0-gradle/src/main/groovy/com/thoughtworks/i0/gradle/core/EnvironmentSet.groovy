@@ -1,23 +1,22 @@
 package com.thoughtworks.i0.gradle.core
 
-import org.gradle.api.Project
 import org.gradle.api.internal.AbstractNamedDomainObjectContainer
 import org.gradle.internal.reflect.Instantiator
 import org.gradle.util.ConfigureUtil
 
 class EnvironmentSet extends AbstractNamedDomainObjectContainer<Environment> {
-    private final Project project
+    private final I0Convention convention
 
-    public EnvironmentSet(Project project, Instantiator instantiator) {
+    public EnvironmentSet(I0Convention convention, Instantiator instantiator) {
         super(Environment, instantiator)
-        this.project = project
+        this.convention = convention
     }
 
     @Override
     protected Environment doCreate(String name) {
-        def environment = instantiator.newInstance(Environment, project, name)
-        project.provisioner.configure(environment)
-        project.facets.hostings.entrySet().each { registered ->
+        def environment = instantiator.newInstance(Environment, name)
+        convention.provisioner.configure(environment)
+        convention.facets.hostings.entrySet().each { registered ->
             environment.metaClass."$registered.key" = { Closure closure ->
                 if (environment.hosting != null) throw new IllegalArgumentException("only one hosting strategy allowed")
                 environment.hosting = registered.value.create()
