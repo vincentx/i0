@@ -36,15 +36,19 @@ class I0Convention {
     }
 
     def application(Closure closure) {
-        if (application != null) throw new IllegalStateException("Application already configured")
-        application = instantiator.newInstance(Application)
-        facets.applicationFacets.entrySet().each {
-            def category = configureCategories(it.key)
-            it.value.entrySet().each {
-                category.metaClass."$it.key" = { Closure config ->
-                    def facet = instantiator.newInstance(it.value)
-                    ConfigureUtil.configure(config, facet)
-                    application.facets.add(facet)
+        if (application == null) {
+            application = instantiator.newInstance(Application)
+            facets.applicationFacets.entrySet().each {
+                def category = configureCategories(it.key)
+                def categories = it.key.join("/")
+                it.value.entrySet().each {
+                    category.metaClass."$it.key" = { Closure config ->
+                        if (!application.facets.containsKey("$categories/$it.key")) {
+                            def facet = instantiator.newInstance(it.value)
+                            application.facets.put("$categories/$it.key", facet)
+                        }
+                        ConfigureUtil.configure(config, application.facets.get("$categories/$it.key"))
+                    }
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.gradle.puppet
+package com.thoughtworks.i0.gradle.facets.puppet
 
 
 class ModuleServerSet {

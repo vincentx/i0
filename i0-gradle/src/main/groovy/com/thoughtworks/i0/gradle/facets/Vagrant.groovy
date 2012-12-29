@@ -1,4 +1,4 @@
-package com.thoughtworks.i0.gradle.vagrant
+package com.thoughtworks.i0.gradle.facets
 
 import com.thoughtworks.i0.gradle.core.Hosting
 

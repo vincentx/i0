@@ -163,7 +163,7 @@ class I0ConventionTest {
         }
 
         assertThat(project.application.facets.size(), is(1))
-        assertThat(project.application.facets.toList()[0].version, is("1.5"))
+        assertThat(project.application.find(FancyLanguage).version, is("1.5"))
     }
 
     @Test
@@ -201,7 +201,41 @@ class I0ConventionTest {
         }
 
         assertThat(project.application.facets.size(), is(2))
-        assertThat(project.application.facets*.provider, hasItems("orm", "neo4j"))
+        assertThat(project.application.facets.values()*.provider, hasItems("orm", "neo4j"))
+    }
+
+    @Test
+    public void should_override_configure_for_application_facet() {
+        buildScript {
+            apply plugin: I0BasePlugin
+
+            facets {
+                application {
+                    persistence {
+                        jpa(fancy: FancyPersistence)
+                    }
+                }
+            }
+
+            application {
+                persistence {
+                    jpa {
+                        fancy { provider = "orm" }
+                    }
+                }
+            }
+
+            application {
+                persistence {
+                    jpa {
+                        fancy { provider = "neo4j" }
+                    }
+                }
+            }
+        }
+
+        assertThat(project.application.facets.size(), is(1))
+        assertThat(project.application.find(FancyPersistence).provider, is("neo4j"))
     }
 
     private def buildScript(Closure closure) {
@@ -213,6 +247,11 @@ class I0ConventionTest {
         @Override
         String getName() {
             return null
+        }
+
+        @Override
+        boolean configure(ApplicationFacet facet, Environment environment) {
+            return true
         }
 
         @Override
@@ -278,9 +317,16 @@ class I0ConventionTest {
     static class FancyLanguage implements ApplicationFacet {
         String version
 
+        @Override
+        void configure(Project project) {
+        }
     }
 
     static class FancyPersistence implements ApplicationFacet {
         String provider
+
+        @Override
+        void configure(Project project) {
+        }
     }
 }
