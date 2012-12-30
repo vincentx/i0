@@ -20,6 +20,10 @@ class I0 implements ApplicationFacet {
     String hibernateValdator = "4.3.0.Final"
 
     @Override
+    void generateScaffold(Project project) {
+    }
+
+    @Override
     void configure(Project project) {
         project.dependencies {
             compile("com.thoughtworks.i0:i0-core:$version") {
@@ -49,7 +53,8 @@ class I0 implements ApplicationFacet {
             runtime "com.sun.jersey:jersey-core:1.16"
         }
 
-        project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar')) {
+        project.task('deployJar', type: Jar, dependsOn: project.tasks.getByName('jar'),
+                group: "Build", description: "Assembles a deploy jar archive containing the main classes and all dependencies.") {
             baseName = 'deploy'
 
             from { project.configurations.runtime.collect { project.zipTree it } } {

@@ -7,6 +7,10 @@ class Jetty implements ApplicationFacet {
     String version = "9.0.0.M3"
 
     @Override
+    void generateScaffold(Project project) {
+    }
+
+    @Override
     void configure(Project project) {
         I0 i0 = project.application.find(I0)
         project.dependencies {

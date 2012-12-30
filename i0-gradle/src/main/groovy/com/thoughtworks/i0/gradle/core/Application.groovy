@@ -1,7 +1,6 @@
 package com.thoughtworks.i0.gradle.core
 
 class Application {
-//    Set<ApplicationFacet> facets = new HashSet<>()
     Map<String, ApplicationFacet> facets = [:]
 
     def <T extends ApplicationFacet> T find(Class<T> facetClass) {

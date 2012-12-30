@@ -255,6 +255,14 @@ class I0ConventionTest {
         }
 
         @Override
+        void resolve(Project project, Environment environment, File root) {
+        }
+
+        @Override
+        void generateScaffold(Project project) {
+        }
+
+        @Override
         void configure(EnvironmentSet environments) {
             environments.extensions.add("readOnlyAddedByDummy", "dummy")
             environments.extensions.create("configurationAddedByDummy", Dummy)
@@ -276,15 +284,13 @@ class I0ConventionTest {
 
         FancyBlock fancyBlock = new FancyBlock()
 
-        @Override
-        String getName() {
-            return "fancy"
-        }
-
         def block(Closure closure) {
             ConfigureUtil.configure(closure, fancyBlock)
         }
 
+        @Override
+        void environment(Project project, Environment environment, File root) {
+        }
     }
 
     static class FancyBlock {
@@ -296,13 +302,12 @@ class I0ConventionTest {
 
         PlainBlock plainBlock = new PlainBlock()
 
-        @Override
-        String getName() {
-            return "plain"
-        }
-
         def block(Closure closure) {
             ConfigureUtil.configure(closure, plainBlock)
+        }
+
+        @Override
+        void environment(Project project, Environment environment, File root) {
         }
     }
 
@@ -318,12 +323,20 @@ class I0ConventionTest {
         String version
 
         @Override
+        void generateScaffold(Project project) {
+        }
+
+        @Override
         void configure(Project project) {
         }
     }
 
     static class FancyPersistence implements ApplicationFacet {
         String provider
+
+        @Override
+        void generateScaffold(Project project) {
+        }
 
         @Override
         void configure(Project project) {

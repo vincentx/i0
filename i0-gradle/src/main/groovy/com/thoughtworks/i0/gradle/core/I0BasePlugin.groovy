@@ -2,7 +2,6 @@ package com.thoughtworks.i0.gradle.core
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.bundling.Jar
 import org.gradle.internal.reflect.Instantiator
 
 import javax.inject.Inject
@@ -26,17 +25,28 @@ class I0BasePlugin implements Plugin<Project> {
         }
 
         project.afterEvaluate {
-            for (facet in project.application.facets)
+            for (facet in project.application.facets.values())
                 facet.configure(project)
-        }
-    }
 
-    private void configureComponentVersions(Project project) {
-        project.extensions.i0Version = "0.2.0-SNAPSHOT"
-        project.extensions.guiceVersion = "3.0"
-        project.extensions.slf4jVersion = "1.7.2"
-        project.extensions.logbackVersion = "1.0.7"
-        project.extensions.jacksonVersion = "2.1.1"
-        project.extensions.hibernateValidatorVersion = "4.3.0.Final"
+            project.task("generateScaffold", group: "Scaffold", description: "Generates the scaffolding structures and code snippets") << {
+                project.application.facets.values.each {
+                    it.generateScaffold(project)
+                }
+
+                project.provisioner.generateScaffold(project)
+            }
+
+            project.task("cleanEnvironments", group: "Deployment", description: "Clean environment configurations") << {
+                project.delete(project.file("environments"))
+            }
+
+            project.task("prepareEnvironments", group: "Deployment", description: "Prepares environment configurations") << {
+                for (environment in project.environments) {
+                    project.file("environments/$environment.name").mkdirs()
+                    environment.hosting.environment(project, environment, project.file("environments/$environment.name"))
+                }
+            }
+
+        }
     }
 }

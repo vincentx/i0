@@ -7,6 +7,10 @@ class Jersey implements ApplicationFacet {
     String version = "1.16"
 
     @Override
+    void generateScaffold(Project project) {
+    }
+
+    @Override
     void configure(Project project) {
         I0 i0 = project.application.find(I0)
         project.dependencies {

@@ -10,6 +10,10 @@ class Java implements ApplicationFacet {
     String guava = "13.0.1"
 
     @Override
+    void generateScaffold(Project project) {
+    }
+
+    @Override
     void configure(Project project) {
         project.dependencies {
             project.extensions.sourceCompatibility = version
@@ -25,7 +29,7 @@ class Java implements ApplicationFacet {
     }
 
     def puppet(ModuleSet modules) {
-        modules.add(Module.of('puppetlabs/stdlib'))
-        modules.add(Module.of('puppetlabs/java'))
+        modules.add(Module.of('puppetlabs/stdlib', ""))
+        modules.add(Module.of('puppetlabs/java', "include java"))
     }
 }
