@@ -1,5 +1,6 @@
 package com.thoughtworks.i0.gradle.facets
 
+import com.thoughtworks.i0.gradle.core.Application
 import com.thoughtworks.i0.gradle.core.I0BasePlugin
 import com.thoughtworks.i0.gradle.facets.frameworks.HibernateJpa
 import com.thoughtworks.i0.gradle.facets.frameworks.I0
@@ -148,6 +149,7 @@ class ApplicationFacetTest {
 
     @Test
     public void i0_should_declare_dependencies() {
+        project.application = new Application()
         def i0 = new I0()
         i0.configure(project)
 

@@ -3,6 +3,10 @@ package com.thoughtworks.i0.gradle.core
 class Application {
     Map<String, ApplicationFacet> facets = [:]
 
+    boolean scaffold = false
+    String appPackage = ""
+    List<String> stackAnnotations = []
+
     def <T extends ApplicationFacet> T find(Class<T> facetClass) {
         def found = facets.values().findAll { facetClass.isInstance(it) }
         if (found.size() == 1) return found.toList().get(0)

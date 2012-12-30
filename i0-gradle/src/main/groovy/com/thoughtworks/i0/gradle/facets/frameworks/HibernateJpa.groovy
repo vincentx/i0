@@ -14,6 +14,7 @@ class HibernateJpa implements ApplicationFacet {
     @Override
     void configure(Project project) {
         I0 i0 = project.application.find(I0)
+        project.application.stackAnnotations.add('@com.thoughtworks.i0.jpa.JpaPersist(unit="domain")');
         project.dependencies {
             compile("com.thoughtworks.i0:i0-persist-jpa:$i0.version") {
                 transitive = false

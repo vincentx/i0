@@ -3,7 +3,6 @@ package com.thoughtworks.i0.gradle
 import com.thoughtworks.i0.gradle.core.I0BasePlugin
 import com.thoughtworks.i0.gradle.facets.Java
 import com.thoughtworks.i0.gradle.facets.Puppet
-import com.thoughtworks.i0.gradle.facets.Ubuntu
 import com.thoughtworks.i0.gradle.facets.Vagrant
 import com.thoughtworks.i0.gradle.facets.frameworks.HibernateJpa
 import com.thoughtworks.i0.gradle.facets.frameworks.I0
@@ -34,10 +33,7 @@ class I0Plugin implements Plugin<Project> {
                 }
 
                 provisioner puppet: Puppet
-                hosting(vagrant: Vagrant) {
-                    feature ubuntu: Ubuntu
-                }
-
+                hosting vagrant: Vagrant
             }
 
             application {

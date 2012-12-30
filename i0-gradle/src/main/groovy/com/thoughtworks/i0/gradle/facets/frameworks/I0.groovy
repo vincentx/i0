@@ -21,10 +21,31 @@ class I0 implements ApplicationFacet {
 
     @Override
     void generateScaffold(Project project) {
+        if (!project.application.scaffold) return
+
+        def folder = project.application.appPackage.replace('.', '/')
+
+        def myStack = project.file("src/main/java/$folder/MyStack.java")
+        myStack.parentFile.mkdirs()
+        myStack.withWriter {
+            it.write("""
+            |package $project.application.appPackage;
+            |
+            |import com.thoughtworks.i0.core.*;
+            |
+            |@Target({ElementType.TYPE})
+            |@Retention(RetentionPolicy.RUNTIME)
+            |@Stack
+            |${project.application.stackAnnotations.join("\n")}
+            |public @interface MyStack {
+            |}""".stripMargin().toString())
+        }
     }
 
     @Override
     void configure(Project project) {
+        project.application.stackAnnotations.add("@Servlet3")
+        project.application.stackAnnotations.add("@GuiceModule")
         project.dependencies {
             compile("com.thoughtworks.i0:i0-core:$version") {
                 transitive = false

@@ -13,6 +13,7 @@ class Jersey implements ApplicationFacet {
     @Override
     void configure(Project project) {
         I0 i0 = project.application.find(I0)
+        project.application.stackAnnotations.add("@com.thoughtworks.i0.jersey.RestApi")
         project.dependencies {
             compile("com.thoughtworks.i0:i0-jersey:$i0.version") {
                 transitive = false
