@@ -57,7 +57,7 @@ class ApplicationFacetTest {
         java.configure(project)
 
         assertThat(project.environments.local.modules.size(), is(2))
-        assertThat(project.environments.local.modules, hasItems(Module.of("puppetlabs/stdlib"), Module.of("puppetlabs/java")))
+        assertThat(project.environments.local.modules, hasItems(Module.of("puppetlabs/stdlib", ""), Module.of("puppetlabs/java", "")))
     }
 
     @Test
