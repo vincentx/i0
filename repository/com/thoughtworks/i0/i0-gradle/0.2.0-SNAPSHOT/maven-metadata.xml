@@ -4,9 +4,10 @@
   <artifactId>i0-gradle</artifactId>
   <version>0.2.0-SNAPSHOT</version>
   <versioning>
-    <versions>
-      <version>0.2.0-SNAPSHOT</version>
-    </versions>
+    <snapshot>
+      <timestamp>20121230.065734</timestamp>
+      <buildNumber>8</buildNumber>
+    </snapshot>
     <lastUpdated>20121230065734</lastUpdated>
   </versioning>
 </metadata>
