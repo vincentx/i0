@@ -3,7 +3,7 @@ package com.thoughtworks.i0.gradle.core
 import org.gradle.api.Project
 
 interface Provisioner extends Facet {
-    String getName()
+    void configure(Project project)
 
     void configure(EnvironmentSet environments)
 

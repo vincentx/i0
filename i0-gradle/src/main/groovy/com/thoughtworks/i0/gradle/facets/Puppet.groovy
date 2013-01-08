@@ -12,8 +12,12 @@ import org.gradle.api.Project
 import java.nio.file.Files
 
 class Puppet implements Provisioner {
-    String name = "puppet"
     ModuleServerSet servers = new ModuleServerSet()
+
+    @Override
+    void configure(Project project) {
+
+    }
 
     @Override
     void configure(EnvironmentSet environments) {
@@ -60,7 +64,6 @@ class Puppet implements Provisioner {
     void generateScaffold(Project project) {
         project.mkdir(project.file("src/puppet/modules"))
         project.mkdir(project.file("src/puppet/manifests"))
-
 
         for (environment in project.environments) {
             project.file("src/puppet/manifests/${environment.name}.pp").withWriter {

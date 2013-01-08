@@ -28,6 +28,8 @@ class I0BasePlugin implements Plugin<Project> {
             for (facet in project.application.facets.values())
                 facet.configure(project)
 
+            project.application.provisioner.configure(project)
+
             project.task("generateScaffold", group: "Scaffold", description: "Generates the scaffolding structures and code snippets") << {
                 project.application.facets.values().each {
                     it.generateScaffold(project)

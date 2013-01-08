@@ -243,12 +243,6 @@ class I0ConventionTest {
     }
 
     static class DummyProvisioner implements Provisioner {
-
-        @Override
-        String getName() {
-            return null
-        }
-
         @Override
         boolean configure(ApplicationFacet facet, Environment environment) {
             return true
@@ -260,6 +254,10 @@ class I0ConventionTest {
 
         @Override
         void generateScaffold(Project project) {
+        }
+
+        @Override
+        void configure(Project project) {
         }
 
         @Override
