@@ -257,10 +257,6 @@ class I0ConventionTest {
         }
 
         @Override
-        void configure(Project project) {
-        }
-
-        @Override
         void configure(EnvironmentSet environments) {
             environments.extensions.add("readOnlyAddedByDummy", "dummy")
             environments.extensions.create("configurationAddedByDummy", Dummy)

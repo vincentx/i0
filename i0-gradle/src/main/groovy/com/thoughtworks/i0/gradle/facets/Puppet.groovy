@@ -15,11 +15,6 @@ class Puppet implements Provisioner {
     ModuleServerSet servers = new ModuleServerSet()
 
     @Override
-    void configure(Project project) {
-
-    }
-
-    @Override
     void configure(EnvironmentSet environments) {
         environments.extensions.add("moduleServers", servers)
     }
