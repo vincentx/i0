@@ -17,4 +17,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Facet(EmbeddedFactory.class)
 public @interface EmbeddedJetty {
+    public static @interface Asset {
+        String uri();
+
+        String resource();
+    }
+
+    Asset[] assets() default {};
 }

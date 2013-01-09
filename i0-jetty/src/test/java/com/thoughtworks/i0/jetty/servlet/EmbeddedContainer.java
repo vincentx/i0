@@ -8,9 +8,10 @@ import com.thoughtworks.i0.core.Servlet3;
 import com.thoughtworks.i0.jetty.EmbeddedJetty;
 
 import static com.thoughtworks.i0.config.Configuration.config;
+import static com.thoughtworks.i0.jetty.EmbeddedJetty.Asset;
 
 @Application("embedded")
-@EmbeddedJetty
+@EmbeddedJetty(assets = @Asset(uri = "/static", resource = "./webapp"))
 @Servlet3
 public class EmbeddedContainer extends ApplicationModule<Configuration> {
     @Override

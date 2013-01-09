@@ -30,6 +30,12 @@ public class EmbeddedJettyTest {
     }
 
     @Test
+    public void should_load_asset_from_resource_path() throws Exception {
+        server = Launcher.launch(new EmbeddedContainer(), false);
+        assertThat(get("http://localhost:8051/embedded/static/test.html"), is("<h1>static</h1>"));
+    }
+
+    @Test
     public void should_inject_service_to_servlet() throws Exception {
         server = Launcher.launch(new EmbeddedContainer(), false);
         assertThat(get("http://localhost:8051/embedded/2/1"), is("injected"));
