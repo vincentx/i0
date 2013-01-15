@@ -30,11 +30,14 @@ import static com.thoughtworks.i0.core.internal.util.TypePredicates.moduleName;
 
 public class Launcher {
     private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+
+    private static String configFolder = "./";
+
     private static final Function<String, File> TO_CONFIG_FILE = new Function<String, File>() {
         @Nullable
         @Override
         public File apply(@Nullable String input) {
-            return new File("./" + input + ".yml");
+            return new File(configFolder + input + ".yml");
         }
     };
     public static final Predicate<File> EXISTS = new Predicate<File>() {
@@ -43,6 +46,7 @@ public class Launcher {
             return input.exists();
         }
     };
+
     public static final Predicate<Map.Entry<Annotation, FacetEnabler>> CONTAINER_CREATOR = new Predicate<Map.Entry<Annotation, FacetEnabler>>() {
         @Override
         public boolean apply(@Nullable Map.Entry<Annotation, FacetEnabler> input) {
@@ -124,7 +128,10 @@ public class Launcher {
     }
 
     public static void main(String... arguments) throws Exception {
-        checkArgument(arguments.length <= 1, "Too many arguments");
+        checkArgument(arguments.length <= 2, "Too many arguments");
+        if(arguments.length == 2){
+            configFolder = arguments[1];
+        }
         launch(readConfiguration(arguments.length == 0 ? findDefaultApplicationModule() : findApplicationModule(arguments[0])), true);
     }
 }
