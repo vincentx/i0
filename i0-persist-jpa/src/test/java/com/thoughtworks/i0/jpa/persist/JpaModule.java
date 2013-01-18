@@ -12,10 +12,11 @@ import com.thoughtworks.i0.jpa.config.Hibernate;
 import static com.thoughtworks.i0.config.Configuration.config;
 import static com.thoughtworks.i0.jpa.DatabaseConfiguration.database;
 
-@Application("jpa")
+
 @JpaPersist(unit = "domain")
 @EmbeddedJetty
 @Servlet3
+@Application("jpa")
 public class JpaModule extends ApplicationModule<JpaConfiguration> {
     @Override
     protected JpaConfiguration createDefaultConfiguration(Configuration.ConfigurationBuilder config) {
