@@ -1,8 +1,7 @@
 package com.thoughtworks.i0.jersey;
 
-import com.sun.jersey.api.client.Client;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 import com.thoughtworks.i0.core.Launcher;
 import com.thoughtworks.i0.core.ServletContainer;
 import com.thoughtworks.i0.jersey.api.AutoScan;
@@ -12,10 +11,10 @@ import com.thoughtworks.i0.jersey.api.p2.Data;
 import org.junit.After;
 import org.junit.Test;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
 
 import static com.sun.jersey.api.client.Client.create;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -50,16 +49,18 @@ public class RestApiFacetTest {
     }
 
     @Test
-    public void should() {
-        System.out.println(get("http://forge.puppetlabs.com/users/puppetlabs/modules/java/releases/find.json"));
+    public void should_support_json_request() throws Exception {
+        server = Launcher.launch(new Specified(), false);
+        assertThat(create().resource("http://localhost:8051/autoscan/api/p2/echo").type(APPLICATION_JSON_TYPE).accept(APPLICATION_JSON_TYPE).post(Data.class, new Data("value")), is(new Data("value")));
     }
 
     private String get(String uri) {
         return create().resource(uri).get(String.class);
     }
 
-    private <T> T json(String uri, Class<T> type) {
-        return create().resource(uri).accept(MediaType.APPLICATION_JSON_TYPE).get(type);
+    private <T> T json(String uri, Class<T> type) throws IOException {
+        String json = create().resource(uri).accept(APPLICATION_JSON_TYPE).get(String.class);
+        return new ObjectMapper().reader(type).readValue(json);
     }
 
     @After

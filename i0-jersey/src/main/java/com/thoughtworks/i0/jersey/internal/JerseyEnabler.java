@@ -12,6 +12,7 @@ import com.thoughtworks.i0.jersey.RestApi;
 
 import static com.google.common.base.Joiner.on;
 import static com.sun.jersey.api.core.PackagesResourceConfig.PROPERTY_PACKAGES;
+import static com.sun.jersey.api.json.JSONConfiguration.FEATURE_POJO_MAPPING;
 
 public class JerseyEnabler implements BindingProvider<RestApi, Configuration> {
 
@@ -22,9 +23,9 @@ public class JerseyEnabler implements BindingProvider<RestApi, Configuration> {
             @Override
             protected void configureServlets() {
                 ImmutableSet<String> packageSet = ImmutableSet.<String>builder()
-                        .add(annotation.packages().length == 0 ? autoScanPackages : annotation.packages()).add("com.fasterxml.jackson.jaxrs.json").build();
+                        .add(annotation.packages().length == 0 ? autoScanPackages : annotation.packages()).build();
                 serve(annotation.prefix()).with(GuiceContainer.class, new ImmutableMap.Builder<String, String>()
-                        .put(PROPERTY_PACKAGES, on(";").skipNulls().join(packageSet)).build());
+                        .put(PROPERTY_PACKAGES, on(";").skipNulls().join(packageSet)).put(FEATURE_POJO_MAPPING, "true").build());
             }
         });
     }

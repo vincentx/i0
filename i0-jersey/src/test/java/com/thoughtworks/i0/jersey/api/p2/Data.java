@@ -1,9 +1,8 @@
 package com.thoughtworks.i0.jersey.api.p2;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlType
+@XmlRootElement
 public class Data {
     private String value;
 
@@ -14,9 +13,12 @@ public class Data {
         this.value = value;
     }
 
-    @XmlElement
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

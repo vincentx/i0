@@ -21,6 +21,7 @@ class Jersey implements ApplicationFacet {
 
             compile "com.sun.jersey:jersey-core:$version"
             runtime "com.sun.jersey:jersey-server:$version"
+            runtime "com.sun.jersey:jersey-json:$version"
             runtime "com.sun.jersey:jersey-servlet:$version"
             runtime "com.sun.jersey.contribs:jersey-guice:$version"
 
