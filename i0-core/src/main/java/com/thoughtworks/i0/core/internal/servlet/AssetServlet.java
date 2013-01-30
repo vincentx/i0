@@ -1,6 +1,8 @@
 package com.thoughtworks.i0.core.internal.servlet;
 
 import com.google.common.hash.Hashing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -22,6 +24,8 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
 
 public class AssetServlet extends HttpServlet {
+    public static final Logger logger = LoggerFactory.getLogger(AssetServlet.class);
+
     private String resourcePath;
 
     public AssetServlet(String resourcePath) {
@@ -51,6 +55,7 @@ public class AssetServlet extends HttpServlet {
                 outputStream.close();
             }
         } catch (RuntimeException e) {
+            logger.warn(e.getMessage(), e);
             response.sendError(SC_NOT_FOUND);
         }
     }
