@@ -12,6 +12,7 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.thoughtworks.i0.config.HttpConfiguration;
 import com.thoughtworks.i0.config.util.Duration;
+import com.thoughtworks.i0.core.ApplicationModule;
 import com.thoughtworks.i0.core.ServletContainer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
@@ -45,6 +46,13 @@ public class Embedded implements ServletContainer {
         ServletContextHandler handler = new ServletContextHandler(server, root(name), shareNothing ? NO_SESSIONS : SESSIONS);
         handler.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
         handler.addServlet(DefaultServlet.class, "/*");
+        if (modules[0] instanceof ApplicationModule) {
+            ApplicationModule[] modules1 =  ((ApplicationModule)modules[0]).getSubModules();
+            for (int i = 0; i < modules1.length; i++) {
+                ApplicationModule module = modules1[i];
+                handler.addServlet(DefaultServlet.class, module.path());
+            }
+        }
 
         injector = Guice.createInjector(modules);
 

@@ -25,7 +25,7 @@ import static com.thoughtworks.i0.core.internal.util.TypePredicates.isStack;
 import static com.thoughtworks.i0.core.internal.util.TypePredicates.typeSubClassOf;
 
 public abstract class ApplicationModule<T extends Configuration> extends AbstractModule {
-    private final Application application;
+    protected final Application application;
 
     private Optional<T> configuration = Optional.absent();
 
@@ -101,4 +101,7 @@ public abstract class ApplicationModule<T extends Configuration> extends Abstrac
         return enablers;
     }
 
+    public ApplicationModule[] getSubModules() {
+        return new ApplicationModule[0];
+    }
 }

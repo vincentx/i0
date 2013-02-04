@@ -107,7 +107,7 @@ public class Launcher {
     private static ApplicationModule createApplicationModule(Class<?> input) {
         try {
             return (ApplicationModule) input.getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException|IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             Throwables.propagate(e);
         }
         return null;
