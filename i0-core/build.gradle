@@ -1,0 +1,19 @@
+dependencies {
+    compile "javax.servlet:servlet-api:3.0"
+    compile "com.google.inject.extensions:guice-servlet:$guiceVersion"
+
+    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-guava:$jacksonVersion"
+    compile "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion"
+
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    compile "org.slf4j:jul-to-slf4j:$slf4jVersion"
+    compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
+
+    compile "com.sun.jersey:jersey-core:$jerseyVersion"
+
+    testCompile "com.google.inject.extensions:guice-servlet:$guiceVersion"
+    testCompile "org.eclipse.jetty:jetty-servlet:$jettyVersion"
+    testCompile "org.eclipse.jetty:jetty-client:$jettyVersion"
+}

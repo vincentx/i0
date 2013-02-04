@@ -1,0 +1,14 @@
+dependencies {
+    compile project(':i0-core')
+
+    compile "com.sun.jersey:jersey-core:$jerseyVersion"
+    compile "com.sun.jersey:jersey-server:$jerseyVersion"
+    compile "com.sun.jersey:jersey-servlet:$jerseyVersion"
+    compile "com.sun.jersey:jersey-json:$jerseyVersion"
+    compile "com.sun.jersey.contribs:jersey-guice:$jerseyVersion"
+
+    runtime "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:$jacksonVersion"
+
+    testCompile project(':i0-jetty')
+    testCompile "com.sun.jersey:jersey-client:$jerseyVersion"
+}
