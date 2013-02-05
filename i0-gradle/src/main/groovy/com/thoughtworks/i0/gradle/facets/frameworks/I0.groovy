@@ -12,7 +12,7 @@ class I0 implements ApplicationFacet {
             'javax.servlet:servlet-api:3.0'
     ]
 
-    String version = "0.2.0-SNAPSHOT"
+    String version = "0.2.0"
     String guice = "3.0"
     String slf4j = "1.7.2"
     String logback = "1.0.7"

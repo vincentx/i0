@@ -39,7 +39,7 @@ class I0Plugin implements Plugin<Project> {
             application {
                 framework {
                     i0 {
-                        version = "0.2.0-SNAPSHOT"
+                        version = "0.2.0"
                         guice = "3.0"
                         slf4j = "1.7.2"
                         logback = "1.0.7"
