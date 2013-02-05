@@ -73,7 +73,7 @@ class ApplicationFacetTest {
             application {
                 framework {
                     i0 {
-                        version = "0.2.0"
+                        version = "0.2.1-SNAPSHOT"
                         guice = "3.0"
                         jackson = "2.1.1"
                     }
@@ -84,7 +84,7 @@ class ApplicationFacetTest {
         def jersey = new Jersey()
         jersey.configure(project)
 
-        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-jersey:0.2.0",
+        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-jersey:0.2.1-SNAPSHOT",
                 "com.sun.jersey:jersey-core:1.16"))
 
         assertThat(dependencies("runtime"), hasItems("com.sun.jersey:jersey-server:1.16",
@@ -106,7 +106,7 @@ class ApplicationFacetTest {
             application {
                 framework {
                     i0 {
-                        version = "0.2.0"
+                        version = "0.2.1-SNAPSHOT"
                         guice = "3.0"
                     }
                 }
@@ -116,7 +116,7 @@ class ApplicationFacetTest {
         def jetty = new Jetty()
         jetty.configure(project)
 
-        assertThat(dependencies("compile"), hasItem("com.thoughtworks.i0:i0-jetty:0.2.0"))
+        assertThat(dependencies("compile"), hasItem("com.thoughtworks.i0:i0-jetty:0.2.1-SNAPSHOT"))
         assertThat(dependencies("runtime"), hasItems("org.eclipse.jetty:jetty-servlet:9.0.0.M3", "com.google.inject.extensions:guice-servlet:3.0"))
         assertThat(dependencies("testCompile"), hasItem("org.eclipse.jetty:jetty-client:9.0.0.M3"))
     }
@@ -133,7 +133,7 @@ class ApplicationFacetTest {
             application {
                 framework {
                     i0 {
-                        version = "0.2.0"
+                        version = "0.2.1-SNAPSHOT"
                         guice = "3.0"
                     }
                 }
@@ -143,7 +143,7 @@ class ApplicationFacetTest {
         def hibernate = new HibernateJpa()
         hibernate.configure(project)
 
-        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-persist-jpa:0.2.0", "org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final"))
+        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-persist-jpa:0.2.1-SNAPSHOT", "org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final"))
         assertThat(dependencies("runtime"), hasItems("com.googlecode.flyway:flyway-core:2.0.2", "org.hibernate:hibernate-entitymanager:4.1.7.Final", "com.google.inject.extensions:guice-persist:3.0"))
     }
 
@@ -153,7 +153,7 @@ class ApplicationFacetTest {
         def i0 = new I0()
         i0.configure(project)
 
-        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-core:0.2.0",
+        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-core:0.2.1-SNAPSHOT",
                 "com.google.inject:guice:3.0", "org.slf4j:slf4j-api:1.7.2", "javax.annotation:jsr305:2.0.1",
                 "javax.inject:javax.inject:1", "javax.validation:validation-api:1.0.0.GA", "javax.servlet:servlet-api:3.0"))
 
