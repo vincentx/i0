@@ -24,6 +24,15 @@ public class H2 {
         }
     };
 
+    public static final DatabaseConfigurationBuilder.Setting fileDB(final String fileName) {
+        return new DatabaseConfigurationBuilder.Setting() {
+            @Override
+            public void set(DatabaseConfigurationBuilder config) {
+                config.url("jdbc:h2:" + fileName);
+            }
+        };
+    }
+
     public static final DatabaseConfigurationBuilder.Setting privateMemoryDB = new DatabaseConfigurationBuilder.Setting() {
         @Override
         public void set(DatabaseConfigurationBuilder config) {
