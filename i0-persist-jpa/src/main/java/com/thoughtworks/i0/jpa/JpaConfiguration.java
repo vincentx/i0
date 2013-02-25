@@ -1,9 +1,7 @@
-package com.thoughtworks.i0.jpa.persist;
+package com.thoughtworks.i0.jpa;
 
 
 import com.thoughtworks.i0.config.Configuration;
-import com.thoughtworks.i0.jpa.DatabaseConfiguration;
-import com.thoughtworks.i0.jpa.WithDatabase;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;

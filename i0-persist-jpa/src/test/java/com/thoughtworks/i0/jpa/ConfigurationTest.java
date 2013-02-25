@@ -2,7 +2,6 @@ package com.thoughtworks.i0.jpa;
 
 import com.thoughtworks.i0.jpa.config.H2;
 import com.thoughtworks.i0.jpa.config.Hibernate;
-import com.thoughtworks.i0.jpa.persist.JpaConfiguration;
 import org.junit.Test;
 
 import java.io.IOException;

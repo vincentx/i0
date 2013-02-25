@@ -5,6 +5,7 @@ import com.thoughtworks.i0.core.Application;
 import com.thoughtworks.i0.core.ApplicationModule;
 import com.thoughtworks.i0.core.Servlet3;
 import com.thoughtworks.i0.jetty.EmbeddedJetty;
+import com.thoughtworks.i0.jpa.JpaConfiguration;
 import com.thoughtworks.i0.jpa.JpaPersist;
 import com.thoughtworks.i0.jpa.config.H2;
 import com.thoughtworks.i0.jpa.config.Hibernate;
