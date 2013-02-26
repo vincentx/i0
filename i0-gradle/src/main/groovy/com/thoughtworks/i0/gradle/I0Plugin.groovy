@@ -4,6 +4,7 @@ import com.thoughtworks.i0.gradle.core.I0BasePlugin
 import com.thoughtworks.i0.gradle.facets.Java
 import com.thoughtworks.i0.gradle.facets.Puppet
 import com.thoughtworks.i0.gradle.facets.Vagrant
+import com.thoughtworks.i0.gradle.facets.frameworks.Grizzly
 import com.thoughtworks.i0.gradle.facets.frameworks.HibernateJpa
 import com.thoughtworks.i0.gradle.facets.frameworks.I0
 import com.thoughtworks.i0.gradle.facets.frameworks.Jersey
@@ -24,7 +25,7 @@ class I0Plugin implements Plugin<Project> {
             facets {
                 application {
                     language java: Java
-                    embedded jetty: Jetty
+                    embedded jetty: Jetty, grizzly: Grizzly
                     restful jersey: Jersey
                     persistence {
                         jpa hibernate: HibernateJpa
