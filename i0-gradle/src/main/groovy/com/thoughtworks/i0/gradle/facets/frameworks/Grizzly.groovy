@@ -22,7 +22,7 @@ class Grizzly implements ApplicationFacet {
 
             compile("javax.websocket:javax.websocket-api:$webSocketApi")
 
-            runtime "org.glassfish.grizzly:grizzly-http-servlet:.$version"
+            runtime "org.glassfish.grizzly:grizzly-http-servlet:$version"
             runtime "org.glassfish.tyrus:tyrus-core:$tyrus"
             runtime "org.glassfish.tyrus:tyrus-container-grizzly:$tyrus"
             runtime "com.google.inject.extensions:guice-servlet:$i0.guice"
