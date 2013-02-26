@@ -14,6 +14,7 @@ class Grizzly implements ApplicationFacet {
 
     @Override
     void configure(Project project) {
+        I0 i0 = project.application.find(I0)
         project.dependencies {
             compile("com.thoughtworks.i0:i0-grizzly:$i0.version") {
                 transitive = false
