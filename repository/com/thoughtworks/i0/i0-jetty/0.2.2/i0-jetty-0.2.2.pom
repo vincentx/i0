@@ -19,15 +19,15 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.thoughtworks.i0</groupId>
-      <artifactId>i0-core</artifactId>
-      <version>0.2.2</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
       <version>9.0.0.M3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.i0</groupId>
+      <artifactId>i0-core</artifactId>
+      <version>0.2.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
