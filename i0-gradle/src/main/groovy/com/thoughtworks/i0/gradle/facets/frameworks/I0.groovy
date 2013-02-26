@@ -8,16 +8,16 @@ class I0 implements ApplicationFacet {
     private static final def JAVA_COMPONENT_API = [
             'javax.annotation:jsr305:2.0.1',
             'javax.inject:javax.inject:1',
-            'javax.validation:validation-api:1.0.0.GA',
-            'javax.servlet:servlet-api:3.0'
     ]
 
-    String version = "0.2.1-SNAPSHOT"
+    String version = "0.2.2-SNAPSHOT"
     String guice = "3.0"
     String slf4j = "1.7.2"
     String logback = "1.0.7"
     String jackson = "2.1.1"
     String hibernateValdator = "4.3.0.Final"
+    String servletApi = "3.1-b06"
+    String validationApi = "1.0.0.GA"
 
     @Override
     void generateScaffold(Project project) {
@@ -59,6 +59,9 @@ class I0 implements ApplicationFacet {
             }
 
             JAVA_COMPONENT_API.each { compile(it) }
+
+            compile "javax.validation:validation-api:$validationApi"
+            compile "javax.servlet:javax.servlet-api:$servletApi"
 
             runtime("org.hibernate:hibernate-validator:$hibernateValdator")
 
