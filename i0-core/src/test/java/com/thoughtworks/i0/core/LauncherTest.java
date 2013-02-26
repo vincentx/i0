@@ -114,12 +114,12 @@ public class LauncherTest {
         }
     }
 
-    public static class ContainerSetter implements ContainerConfigurator<ContainerConfig, Configuration> {
+    public static class ContainerSetter implements ContainerConfigurator<ContainerConfig, Configuration, ServletContainer> {
         private static ServletContainer lastContainer;
         private static String lastConfig;
 
         @Override
-        public void configure(ServletContainer container, ContainerConfig annotation, Configuration configuration) {
+        public void configure(ServletContainer container, ContainerConfig annotation, ApplicationModule<Configuration> module) {
             lastContainer = container;
             lastConfig = annotation.value();
         }

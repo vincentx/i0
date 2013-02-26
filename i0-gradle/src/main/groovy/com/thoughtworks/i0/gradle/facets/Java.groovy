@@ -25,10 +25,10 @@ class Java implements ApplicationFacet {
 
         for (environment in project.environments)
             if (project.provisioner.configure(this, environment))
-                project.logger.warn("Java enabled for $environment.name")
+                project.logger.info("Java enabled for $environment.name")
     }
 
-    def puppet(ModuleSet  modules) {
+    def puppet(ModuleSet modules) {
         modules.add(Module.of('puppetlabs/stdlib', ""))
         modules.add(Module.of('puppetlabs/java', "include java"))
     }

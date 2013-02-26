@@ -72,7 +72,7 @@ public class Launcher {
 
         for (Map.Entry<Annotation, FacetEnabler> enabler : module.enablers().entrySet())
             if (enabler.getValue() instanceof ContainerConfigurator)
-                ((ContainerConfigurator) enabler.getValue()).configure(container, enabler.getKey(), configuration);
+                ((ContainerConfigurator) enabler.getValue()).configure(container, enabler.getKey(), module);
 
         container.start(standalone);
 

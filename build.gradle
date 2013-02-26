@@ -22,6 +22,8 @@ subprojects {
         flywayVersion = '2.0.2'
         hibernateJpaVersion = '4.1.7.Final'
         hibernateValidatorVersion = '4.3.0.Final'
+        grizzlyVersion = "2.3-rc4"
+        tyrusVersion="1.0-b11"
 
         junitVersion = '4.10'
         mockitoVersion = '1.9.5-rc1'

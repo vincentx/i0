@@ -1,0 +1,13 @@
+dependencies {
+    compile project(':i0-core')
+
+
+    compile "com.google.inject.extensions:guice-servlet:$guiceVersion"
+    compile "org.glassfish.grizzly:grizzly-http-servlet:$grizzlyVersion"
+
+    compile "org.glassfish.tyrus:tyrus-core:$tyrusVersion"
+    compile "org.glassfish.tyrus:tyrus-container-grizzly:$tyrusVersion"
+
+    testCompile "org.eclipse.jetty:jetty-client:$jettyVersion"
+    testCompile "org.eclipse.jetty.websocket:websocket-client:$jettyVersion"
+}

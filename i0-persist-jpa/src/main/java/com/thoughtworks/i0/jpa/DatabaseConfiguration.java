@@ -122,7 +122,7 @@ public class DatabaseConfiguration {
     @XmlType
     public static class MigrationConfiguration {
         private boolean auto = true;
-        private String[] locations = new String[]{"com/thoughtworks/i0/jersey/api/p2/migration"};
+        private String[] locations = new String[]{"db/migration"};
         private Map<String, String> placeholders = ImmutableMap.of();
 
         public MigrationConfiguration() {

@@ -1,8 +1,8 @@
-package com.thoughtworks.i0.jetty;
+package com.thoughtworks.i0.container.grizzly;
 
+import com.thoughtworks.i0.container.grizzly.internal.EmbeddedContainer;
 import com.thoughtworks.i0.core.Launcher;
 import com.thoughtworks.i0.core.ServletContainer;
-import com.thoughtworks.i0.jetty.servlet.EmbeddedContainer;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.junit.After;
@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class EmbeddedJettyTest {
+public class EmbeddedGrizzlyTest {
     private ServletContainer server;
 
     @After
@@ -20,7 +20,7 @@ public class EmbeddedJettyTest {
     }
 
     @Test
-    public void should_launch_embedded_jetty() throws Exception {
+    public void should_launch_embedded_grizzly() throws Exception {
         server = Launcher.launch(new EmbeddedContainer(), false);
         assertThat(get("http://localhost:8051/embedded/1/1"), is("servlet1"));
     }
