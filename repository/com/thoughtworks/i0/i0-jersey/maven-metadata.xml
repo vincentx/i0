@@ -2,13 +2,11 @@
 <metadata>
   <groupId>com.thoughtworks.i0</groupId>
   <artifactId>i0-jersey</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.2-SNAPSHOT</version>
   <versioning>
     <versions>
-      <version>0.2.0-SNAPSHOT</version>
-      <version>0.2.0</version>
-      <version>0.2.1</version>
+      <version>0.2.2-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20130225050915</lastUpdated>
+    <lastUpdated>20130226034909</lastUpdated>
   </versioning>
 </metadata>

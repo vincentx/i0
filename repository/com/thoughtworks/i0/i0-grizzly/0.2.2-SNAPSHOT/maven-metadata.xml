@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.thoughtworks.i0</groupId>
+  <artifactId>i0-grizzly</artifactId>
+  <version>0.2.2-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20130226.034908</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20130226034908</lastUpdated>
+  </versioning>
+</metadata>
