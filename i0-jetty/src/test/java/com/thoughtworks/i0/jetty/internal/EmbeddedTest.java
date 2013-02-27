@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class EmbeddedTest {
+    public static final int PORT = 8051;
     private ServletContainer server;
 
     @After
@@ -28,13 +29,13 @@ public class EmbeddedTest {
 
     @Test
     public void should_configure_server_as_http_service() throws Exception {
-        startServer(config().http().port(8080).build());
+        startServer(config().http().port(PORT).build());
         assertThat(get("http://localhost:8080/message"), is("message"));
     }
 
     @Test
     public void should_configure_server_as_https_service() throws Exception {
-        startServer(config().http().port(8080)
+        startServer(config().http().port(PORT)
                 .ssl()
                 .keyStore(getClass().getResource("test.keystore").getPath(), "password")
                 .trustStore(getClass().getResource("test.keystore").getPath(), "password")
