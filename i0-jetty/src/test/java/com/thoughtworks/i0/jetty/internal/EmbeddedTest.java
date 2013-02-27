@@ -30,7 +30,7 @@ public class EmbeddedTest {
     @Test
     public void should_configure_server_as_http_service() throws Exception {
         startServer(config().http().port(PORT).build());
-        assertThat(get("http://localhost:8080/message"), is("message"));
+        assertThat(get("http://localhost:8051/message"), is("message"));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class EmbeddedTest {
                 .keyStore(getClass().getResource("test.keystore").getPath(), "password")
                 .trustStore(getClass().getResource("test.keystore").getPath(), "password")
                 .end().build());
-        assertThat(get("https://localhost:8080/message"), is("message"));
+        assertThat(get("https://localhost:8051/message"), is("message"));
     }
 
     private void startServer(HttpConfiguration configuration) throws Exception {
