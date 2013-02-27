@@ -10,6 +10,11 @@ import com.thoughtworks.i0.core.ContainerCreator;
 import com.thoughtworks.i0.core.ServletContainer;
 import com.thoughtworks.i0.core.internal.servlet.AssetServlet;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.thoughtworks.i0.container.grizzly.EmbeddedGrizzly.MimeExtension;
+
 public class EmbeddedFactory implements ContainerCreator<EmbeddedGrizzly, Configuration>, BindingProvider<EmbeddedGrizzly, Configuration> {
 
     @Override
@@ -24,9 +29,17 @@ public class EmbeddedFactory implements ContainerCreator<EmbeddedGrizzly, Config
             @Override
             protected void configureServlets() {
                 for (EmbeddedGrizzly.Asset asset : annotation.assets()) {
-                    serve(asset.uri() + "/*").with(new AssetServlet(asset.resource()));
+                    serve(asset.uri() + "/*").with(new AssetServlet(asset.resource()).setMimeExtensions(toMap(annotation.mimeExtensions())));
                 }
             }
         });
+    }
+
+    private Map<String, String> toMap(MimeExtension[] mimeExtensions) {
+        Map<String, String> map = new HashMap<>();
+        for (MimeExtension mimeExtension : mimeExtensions) {
+            map.put(mimeExtension.extension(), mimeExtension.mime());
+        }
+        return map;
     }
 }

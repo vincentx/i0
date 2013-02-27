@@ -10,7 +10,8 @@ import com.thoughtworks.i0.core.ApplicationModule;
 import static com.thoughtworks.i0.config.Configuration.config;
 
 @EmbeddedGrizzly
-@WebSocket
+@
+        WebSocket
 @Application("websocket")
 public class WebSocektApplication extends ApplicationModule<Configuration> {
     @Override

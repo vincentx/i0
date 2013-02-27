@@ -4,6 +4,7 @@ import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.activation.MimeType;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.io.Resources.getResource;
@@ -27,6 +30,8 @@ public class AssetServlet extends HttpServlet {
     public static final Logger logger = LoggerFactory.getLogger(AssetServlet.class);
 
     private String resourcePath;
+    private Map<String, String> mimeExtensions = new HashMap();
+    public static final String DEFAULT_MIME_TYPE = "application/octet-stream";
 
     public AssetServlet(String resourcePath) {
         this.resourcePath = resourcePath;
@@ -44,7 +49,7 @@ public class AssetServlet extends HttpServlet {
                 response.sendError(SC_NOT_MODIFIED);
                 return;
             }
-            for (String mimeType : fromNullable(getServletContext().getMimeType(request.getPathInfo())).asSet())
+            for (String mimeType : fromNullable(getMimeType(request.getPathInfo())).asSet())
                 response.setContentType(mimeType);
             response.setHeader(IF_NONE_MATCH, etag);
             response.setDateHeader(IF_MODIFIED_SINCE, lastModified);
@@ -58,6 +63,27 @@ public class AssetServlet extends HttpServlet {
             logger.warn(e.getMessage(), e);
             response.sendError(SC_NOT_FOUND);
         }
+    }
+
+    private String getMimeType(String file) {
+        if (file == null) {
+            return DEFAULT_MIME_TYPE;
+        }
+        int period = file.lastIndexOf(".");
+        if (period < 0) {
+            return DEFAULT_MIME_TYPE;
+        }
+        String mimeType = getServletContext().getMimeType(file);
+
+        String extension = file.substring(period + 1);
+        if(this.mimeExtensions.containsKey(extension) && mimeTypeNotFound(mimeType)){
+            return this.mimeExtensions.get(extension);
+        }
+        return mimeType;
+    }
+
+    private boolean mimeTypeNotFound(String mimeType) {
+        return mimeType == null || "text/plain".equalsIgnoreCase(mimeType);
     }
 
     private long getLastModified(URL resource) {
@@ -83,5 +109,10 @@ public class AssetServlet extends HttpServlet {
             } catch (IOException e) {
             }
         }
+    }
+
+    public AssetServlet setMimeExtensions(Map<String, String> mimeExtensions) {
+        this.mimeExtensions = mimeExtensions;
+        return this;
     }
 }
