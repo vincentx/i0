@@ -24,4 +24,12 @@ public @interface EmbeddedJetty {
     }
 
     Asset[] assets() default {};
+
+    public static @interface MimeExtension{
+        String mime();
+
+        String extension();
+    }
+
+    MimeExtension[] mimeExtensions() default {};
 }
