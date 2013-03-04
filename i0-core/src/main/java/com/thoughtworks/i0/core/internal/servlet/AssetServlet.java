@@ -1,10 +1,10 @@
 package com.thoughtworks.i0.core.internal.servlet;
 
 import com.google.common.hash.Hashing;
+import com.thoughtworks.i0.core.internal.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.activation.MimeType;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -57,7 +57,7 @@ public class AssetServlet extends HttpServlet {
             try {
                 outputStream.write(content);
             } finally {
-                outputStream.close();
+                IOUtils.closeQuietly(outputStream);
             }
         } catch (RuntimeException e) {
             logger.warn(e.getMessage(), e);
