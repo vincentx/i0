@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 
 import static com.google.common.base.Joiner.on;
 import static com.sun.jersey.api.core.PackagesResourceConfig.PROPERTY_PACKAGES;
-import static com.sun.jersey.api.json.JSONConfiguration.FEATURE_POJO_MAPPING;
 
 public class JerseyEnabler implements BindingProvider<RestApi, Configuration> {
 
