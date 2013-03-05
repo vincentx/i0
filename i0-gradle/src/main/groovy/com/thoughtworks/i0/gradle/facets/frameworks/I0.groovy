@@ -10,7 +10,7 @@ class I0 implements ApplicationFacet {
             'javax.inject:javax.inject:1',
     ]
 
-    String version = "0.2.2-SNAPSHOT"
+    String version = "0.2.4"
     String guice = "3.0"
     String slf4j = "1.7.2"
     String logback = "1.0.7"

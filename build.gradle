@@ -1,6 +1,6 @@
 allprojects {
     group = 'com.thoughtworks.i0'
-    version = '0.2.2'
+    version = '0.2.4'
 }
 
 subprojects {
@@ -37,8 +37,14 @@ subprojects {
 
     uploadArchives {
         repositories {
-            mavenDeployer {
-                repository(url: uri('../repository'))
+//            mavenDeployer {
+//                repository(url: uri('/Users/twer/Work/repository'))
+//            }
+            deployer = mavenDeployer {
+                configureAuth = {
+                    authentication(userName: "deployment", password: "deployment123")
+                }
+                repository(url: "http://132.147.68.178:8081/nexus/content/repositories/i0/", configureAuth)
             }
         }
     }
