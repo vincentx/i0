@@ -2,8 +2,7 @@ package com.thoughtworks.i0.core;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 import com.google.inject.AbstractModule;
 import com.thoughtworks.i0.config.Configuration;
 
@@ -11,12 +10,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 import java.util.Map;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableSet.copyOf;
+import static com.google.common.collect.ImmutableSortedSet.orderedBy;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.find;
 import static com.thoughtworks.i0.config.Configuration.config;
@@ -25,6 +26,13 @@ import static com.thoughtworks.i0.core.internal.util.TypePredicates.isStack;
 import static com.thoughtworks.i0.core.internal.util.TypePredicates.typeSubClassOf;
 
 public abstract class ApplicationModule<T extends Configuration> extends AbstractModule {
+    public static final Comparator<Annotation> FACET_COMPARATOR = new Comparator<Annotation>() {
+        @Override
+        public int compare(Annotation o1, Annotation o2) {
+            int result = o1.annotationType().getAnnotation(Facet.class).order() - o2.annotationType().getAnnotation(Facet.class).order();
+            return result == 0 ? -1 : result; // never return 0 as it will think o1 and o2 are duplicate and remove one of them;
+        }
+    };
     protected final Application application;
 
     private Optional<T> configuration = Optional.absent();
@@ -46,7 +54,8 @@ public abstract class ApplicationModule<T extends Configuration> extends Abstrac
     }
 
     private void findEnablers(Class<?> target, ImmutableMap.Builder<Annotation, FacetEnabler> builder) {
-        for (Annotation annotation : filter(copyOf(target.getAnnotations()), isFacet)) {
+        Iterable<Annotation> filter = filter(copyOf(target.getAnnotations()), isFacet);
+        for (Annotation annotation : ImmutableSortedMultiset.orderedBy(FACET_COMPARATOR).addAll(filter).build()) {
             Facet facet = annotation.annotationType().getAnnotation(Facet.class);
             Class<? extends FacetEnabler> enablerClass = facet.value();
             try {

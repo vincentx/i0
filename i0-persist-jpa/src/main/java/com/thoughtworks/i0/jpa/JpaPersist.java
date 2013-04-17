@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Inherited
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Facet(JpaPersistUnitEnabler.class)
+@Facet(value = JpaPersistUnitEnabler.class, order = -1)
 public @interface JpaPersist {
     String unit();
 }

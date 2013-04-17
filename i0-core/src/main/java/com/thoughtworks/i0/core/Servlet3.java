@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Inherited
 @Target({ANNOTATION_TYPE, TYPE})
 @Retention(RUNTIME)
-@Facet(Servlet3Enabler.class)
+@Facet(value = Servlet3Enabler.class, order= 1)
 public @interface Servlet3 {
     String[] packages() default {};
 }

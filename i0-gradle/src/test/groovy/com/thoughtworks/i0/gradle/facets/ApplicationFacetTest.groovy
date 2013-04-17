@@ -153,7 +153,7 @@ class ApplicationFacetTest {
         def i0 = new I0()
         i0.configure(project)
 
-        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-core:0.2.4",
+        assertThat(dependencies("compile"), hasItems("com.thoughtworks.i0:i0-core:0.2.5",
                 "com.google.inject:guice:3.0", "org.slf4j:slf4j-api:1.7.2", "javax.annotation:jsr305:2.0.1",
                 "javax.inject:javax.inject:1", "javax.validation:validation-api:1.0.0.GA", "javax.servlet:javax.servlet-api:3.1-b06"))
 

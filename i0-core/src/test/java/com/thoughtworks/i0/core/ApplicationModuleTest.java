@@ -12,8 +12,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.lang.annotation.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.thoughtworks.i0.config.Configuration.config;
 import static org.hamcrest.CoreMatchers.*;
@@ -62,6 +61,21 @@ public class ApplicationModuleTest {
             assertThat(enabler, anyOf(instanceOf(GuiceModuleEnabler.class), instanceOf(Servlet3Enabler.class)));
         for (Annotation annotation : enablers.keySet())
             assertThat(annotation.annotationType(), anyOf(equalTo(GuiceModule.class), equalTo(Servlet3.class)));
+    }
+
+    @Test
+    public void should_return_facetEnablers_in_order() {
+        Map<Annotation, FacetEnabler> enablers = new ApplicationModuleWithOrder().enablers();
+
+        assertThat(enablers.size(), is(3));
+        Iterator<Annotation> iterator = enablers.keySet().iterator();
+        assertThat(getOrder(iterator.next().annotationType()), is(getOrder(FacetOrderMinus10.class)));
+        assertThat(getOrder(iterator.next().annotationType()), is(getOrder(Servlet3.class)));
+        assertThat(getOrder(iterator.next().annotationType()), is(getOrder(FacetOrder10.class)));
+    }
+
+    private int getOrder(Class clz) {
+        return ((Facet) clz.getAnnotation(Facet.class)).order();
     }
 
     @Test
@@ -138,6 +152,22 @@ public class ApplicationModuleTest {
         String value();
     }
 
+    @Inherited
+    @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Facet(value = BindingEnabler.class, order = 10)
+    private static @interface FacetOrder10 {
+        String value();
+    }
+
+    @Inherited
+    @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Facet(value = BindingEnabler.class, order = -10)
+    private static @interface FacetOrderMinus10 {
+        String value();
+    }
+
     public static class BindingEnabler implements BindingProvider<Binding, ConfigA> {
 
         @Override
@@ -166,6 +196,18 @@ public class ApplicationModuleTest {
     @Application("d")
     @MyStack
     private static class ApplicationModuleD extends ApplicationModule<ConfigA> {
+
+        @Override
+        protected ConfigA createDefaultConfiguration(Configuration.ConfigurationBuilder config) {
+            return null;
+        }
+    }
+
+    @Application("d")
+    @FacetOrderMinus10("")
+    @FacetOrder10("")
+    @Servlet3()
+    private static class ApplicationModuleWithOrder extends ApplicationModule<ConfigA> {
 
         @Override
         protected ConfigA createDefaultConfiguration(Configuration.ConfigurationBuilder config) {
