@@ -28,6 +28,8 @@ public class Embedded implements ServletContainer {
     public Embedded(HttpConfiguration configuration) {
         server = HttpServer.createSimpleServer(null, configuration.getPort());
         server.getListener("grizzly").registerAddOn(new WebSocketAddOn());
+
+        server.getServerConfiguration().setJmxEnabled(true);
         engine = WebSocketEngine.getEngine();
     }
 
